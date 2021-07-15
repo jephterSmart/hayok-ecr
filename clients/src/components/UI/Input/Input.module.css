@@ -1,0 +1,31 @@
+.Input{
+    width: 90%;
+    margin: 8px auto;
+    margin-top: 0;
+}
+.Input label{
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color:black;
+    margin-bottom: 8px;
+    padding: 0;
+
+}
+.Input input, .Input textarea{
+    width: 100%;
+    display: block;
+    padding: 1.2rem;
+    line-height: 1.4;
+    font-size: 1.6rem;
+    outline: none;
+    background-color: rgb(152, 214, 255);
+    border:none;
+    margin-bottom: 16px;
+    border: 1px solid var(--secondaryBColor);
+    border-radius: 2px;
+}
+.Input input:active, .Input input:focus{
+    border: 1px solid rgb(187, 187, 187);
+    border-radius: 4px;
+}

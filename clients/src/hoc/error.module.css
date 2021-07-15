@@ -1,0 +1,10 @@
+.Error{
+    width: 100vw;
+    min-height: 100vh;
+    background-color: var(--primaryBColor);
+    
+}
+.Red{
+    color: red;
+    background-color: white;
+}

@@ -1,0 +1,17 @@
+.NavItem{
+    list-style: none;
+    color:var(--primaryColor);
+    text-align: center;
+    padding: 1.2rem;
+    font-size: 1.8rem;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom-color linear 500ms 100ms ;
+}
+.NavItem a{
+    text-decoration: none;
+    color:inherit;
+}
+.NavItem:hover, .NavItem:active, .NavItem.active{
+    font-weight: 700;
+    border-bottom-color: var(--primaryColor) ;
+}
