@@ -5,16 +5,17 @@ import {Route, Redirect, Switch} from 'react-router-dom';
 
 import Home from './components/HomePage';
 import Layout from './containers/Layout';
-import LoginPage from './components/Pages/Auth/Login';
+// import LoginPage from './components/Pages/Auth/Login';
 
 //to check page we're currently in
 // import {useAuthStore} from './store/authStore';
 
 //To lazyload pages 
-//import lazyLoad from './hoc/lazyLoad';
+import lazyLoad from './hoc/lazyLoad';
 
 //load pages asynchronously
-//const LoginPage = lazyLoad(() => import('./components/Pages/Auth/Login'));
+const LoginPage = lazyLoad(() => import('./components/Pages/Auth/Login'));
+const SignUpPage = lazyLoad(() => import('./components/Pages/Auth/Signup'));
 
 
 
@@ -29,6 +30,9 @@ const App = () => {
       
       <Route path ='/auth/login'>
         <LoginPage />
+      </Route>
+      <Route path='/auth/create' >
+        <SignUpPage />
       </Route>
       <Route path = '/'>
         <Home />
