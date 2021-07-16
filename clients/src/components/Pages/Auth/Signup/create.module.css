@@ -24,6 +24,19 @@
 
 }
 
+.Details{
+    transform: translateY(130%);
+    transition: transform linear 1000ms 200ms;
+    z-index: 50;
+    opacity: 0;
+}
+.Show{
+    transform: translateY(0%);
+    opacity: 1;
+}
+.Hide{
+    display: none;
+}
 .Grid{
     display: flex;
     justify-content: space-between;
@@ -35,7 +48,16 @@
 .Grid>div{
     margin-left: 2.0rem;
 }
-
+.Column{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.Column>div{
+    width:90%;
+    margin:auto;
+}
 
 .Line{
     color:blueviolet;
@@ -75,6 +97,9 @@
     color:white;
     cursor: pointer;
     border: 2px solid transparent;
+}
+.Next{
+    margin-left: 5%;
 }
 .Btn:hover{
     border: 2px solid var(--secondaryBColor);

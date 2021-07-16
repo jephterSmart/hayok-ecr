@@ -25,7 +25,7 @@ const Login = (props) => {
                 {
                     (role === 'specialist') ? (
                         <div>
-                            <Input label="Username" type='text'/>
+                            <Input label="Email" type='email'/>
                             <Input label = 'Password' type='password' />
                             <p className={classes.Line}>
                                 <Link className={classes.Link}
