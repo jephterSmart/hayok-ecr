@@ -2,22 +2,28 @@ const express = require('express');
 const {body} = require('express-validator/check');
 
 const authController = require('../controllers/auth');
-const Usermodel = require('../models/user');
+const Doctormodel = require('../models/Users/doctor');
 
 
 const router = express.Router();
 
 router.put('/signup',[
     body('email').isEmail().withMessage('Not a valid email').custom((value,{req}) => {
-       return Usermodel.findOne({email: value})
+       return Doctormodel.findOne({email: value})
         .then(result => {
             if(result) 
             return Promise.reject('User already exist with that email');
         })
     }).normalizeEmail(),
     body('password','password must be atleast 5 characters').trim().isLength({min:5}),
-    body('name').trim().not().isEmpty()
+    body('firstName').trim().not().isEmpty(),
+    body('lastName').trim().not().isEmpty(),
 ],authController.signUp);
+
+router.put('/signup/patient',[
+    body('firstName').trim().not().isEmpty(),
+    body('lastName').trim().not().isEmpty()
+],authContoller.patientSignUp);
 
 router.post('/login',authController.login)
 
