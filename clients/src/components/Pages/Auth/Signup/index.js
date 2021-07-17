@@ -5,6 +5,12 @@ import Input from '../../../UI/Input';
 import Select from '../../../UI/Select';
 import classes from './create.module.css';
 
+import { useAuthDispatch } from '../../../../store/authStore';
+
+//This will help us do all the heavy lifting of signing up;
+import { signUpHandler } from '../../../../utils/authHelper';
+
+
 const DetailsPage = ({next}) => {
   
     return(
@@ -46,7 +52,7 @@ const RequiredDetails = ({nextHandler,next}) => {
         <div className={next && classes.Hide}>
         <div className={classes.Column}>
             {error && <p style={{color:'red',fontSize:'1.4rem'}}>* Passwords do not match</p>}
-        <Input label='User Name:' name='userName' required />
+        <Input label='Email:' name='email' type='email' required />
         <Input label='Password:' name='password' type="password" required ref={PasswordRef}/>
         <Input label='Confirm Password' name='confirmPassword' type='password' required ref={ConfirmRef}/>
         
@@ -58,9 +64,11 @@ const RequiredDetails = ({nextHandler,next}) => {
 }
 const Signup = () => {
     const [next,setNext] = useState(false);
+    const dispatch = useAuthDispatch();
     const submitHandler = (e) => {
         e.preventDefault();
-        console.log(e)
+        signUpHandler(dispatch,e)
+        
     }
     const nextHandler = (e) => {
         setNext(true);
