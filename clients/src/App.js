@@ -3,13 +3,13 @@ import React ,{useEffect} from 'react';
 import {Route, Redirect, Switch} from 'react-router-dom';
 
 //our auth store
-import { useAuthDispatch,LOGIN_SUCCESS } from './store/authStore';
+import { useAuthDispatch,LOGIN_SUCCESS,useAuthStore } from './store/authStore';
 
-
+//pages to render
 import Home from './components/HomePage';
 import Layout from './containers/Layout';
 import Logout from './components/Pages/Auth/Logout';
-// import LoginPage from './components/Pages/Auth/Login';
+import Patient from './components/Pages/Patient';
 
 //to check page we're currently in
 // import {useAuthStore} from './store/authStore';
@@ -27,6 +27,7 @@ const SignUpPage = lazyLoad(() => import('./components/Pages/Auth/Signup'));
 
 const App = () => {
   const dispatch = useAuthDispatch();
+  const authStore = useAuthStore();
   //done so that if there already exist a token, it can be reused again
   useEffect(() => {
     if(localStorage.getItem('user Token')){
@@ -53,9 +54,7 @@ const App = () => {
       <Route path='/auth/create' >
         <SignUpPage />
       </Route>
-      <Route path='/auth/logout' >
-        <Logout />
-      </Route>
+      
       <Route path = '/'>
         <Home />
       </Route>
@@ -64,6 +63,22 @@ const App = () => {
       
 )
 
+if(authStore.authenticated && authStore.userType === 'doctor'){
+  routes = (
+    <Switch>
+      <Route path='/user/all-patients'>
+        <Patient />
+      </Route>
+      <Route path='/auth/logout' >
+        <Logout />
+      </Route>
+      <Route path = '/'>
+        <Home />
+      </Route>
+       <Redirect to='/' />
+    </Switch>
+  )
+}
 
              
 

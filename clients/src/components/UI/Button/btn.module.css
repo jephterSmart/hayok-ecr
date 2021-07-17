@@ -1,0 +1,42 @@
+.Button{
+ color: var(--primaryColor);
+ cursor: pointer;
+ display: inline-flex;
+ justify-content: center;
+ align-items: center;
+ background-color: white ;
+ border-radius: 12px;
+ width: 14rem;
+ border:2px solid var(--primaryColor);
+ font-size: 1.6rem;
+ padding: 1.2rem 1.4rem;
+ margin: 2.0rem 0;
+}
+.Button:hover{
+    color: white;
+    background-color: var(--primaryColor);
+}
+.Button:disabled{
+    cursor: wait;
+    color: gray;
+    background-color: transparent;
+    border-color: gray;
+}
+/* helper classes added dynamically */
+.fullWidth{
+    width: 100%;
+}
+.filled{
+    background-color: var(--primaryColor);
+    border-color: transparent;
+    color: white;
+}
+.filled:hover{
+    background-color: white;
+    border-color: var(--primaryColor);
+    color: var(--primaryColor)
+}
+.shadow{
+    z-index: 50;
+    box-shadow: 1px 3px 6px rgba(10,10,10,0.2);
+}
