@@ -20,7 +20,8 @@ exports.signUp = (req,res,next) => {
     const cadre = req.body.cadre;
     const department = req.body.department;
     const age = req.body.age;
-
+    const gender = req.body.gender
+    //encrypt password, so that no one else can see password
     bcrypt.hash(password,12)
     .then(hashedPw => {
         const user = new DoctorModel({
@@ -28,13 +29,13 @@ exports.signUp = (req,res,next) => {
             password:hashedPw,
             firstName,lastName
             ,cadre,department,
-            age
+            age,gender
         })
        return user.save()
     }) 
     .then(result => {
         res.status(201).json({
-            message: 'User is created',
+            message: 'Doctor is created',
             userId: result._id
         })
     })
@@ -46,10 +47,17 @@ exports.signUp = (req,res,next) => {
 }
 
 exports.login = (req,res,next) => {
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        const error = new Error(errors.array()[0].msg);
+        error.statusCode = 422;
+        throw error;
+    }
     const email = req.body.email;
     const password = req.body.password;
     let loginUser;
-    UserModel.findOne({email:email})
+    DoctorModel.findOne({email:email})
     .then(user =>{
         if(!user){
             const error = new Error('Not a registered User');
@@ -68,7 +76,7 @@ exports.login = (req,res,next) => {
         const token = jwt.sign({
             email:loginUser.email,
             userId:loginUser._id.toString()
-        },'my secret life',{expiresIn: '1hr'});
+        },process.env.SECRET,{expiresIn: '1hr'});
         res.status(200).json({
             message:'login sucessful!',
             token: token,

@@ -28,7 +28,7 @@ app.use((error,req,res,next) =>{
 mongoose.connect(process.env.MONGO_URI,
 {useNewUrlParser: true,useUnifiedTopology: true})
 .then(result => {
-   console.log(result);
+   console.log('Connected to mongoDb');
 server = app.listen(process.env.PORT || 8080)
 // socket.init(server)
 
