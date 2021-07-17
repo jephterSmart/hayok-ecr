@@ -33,7 +33,7 @@ const doctorSchema = new Schema({
     },
     gender: {
         type: String,
-        default: 'i am new'
+        default: 'male'
     },
     patients:[ {
         type: Schema.Types.ObjectId,
