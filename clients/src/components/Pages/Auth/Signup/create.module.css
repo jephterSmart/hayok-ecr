@@ -18,9 +18,10 @@
     z-index: 100;
     background-color: white;
     width: 800px;
-    height: 500px;
+    min-height: 500px;
     padding: 2.5rem;
     margin: auto;
+    
 
 }
 
@@ -28,11 +29,22 @@
     transform: translateY(130%);
     transition: transform linear 1000ms 200ms;
     z-index: 50;
-    opacity: 0;
+    /* opacity: 0; */
+    visibility: hidden;
+}
+.Error{
+    text-align: center;
+    width: 100%;
+    font-size: 1.6rem;
+    color: red;
+    visibility: hidden;
+    /* opacity: 0; */
+
 }
 .Show{
-    transform: translateY(0%);
-    opacity: 1;
+    transform: translateY(0);
+    /* opacity: 1; */
+    visibility: visible;
 }
 .Hide{
     display: none;
@@ -97,6 +109,9 @@
     color:white;
     cursor: pointer;
     border: 2px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .Next{
     margin-left: 5%;
@@ -105,4 +120,9 @@
     border: 2px solid var(--secondaryBColor);
     background-color: white;
     color: var(--secondaryBColor);
+}
+.Btn:disabled{
+    color:gray;
+    border-color: gray;
+    background-color: white;
 }
