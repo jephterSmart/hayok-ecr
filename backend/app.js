@@ -3,13 +3,17 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
 const cors = require('cors');
 
+//routes to go into
+const authRoute = require('./routes/auth')
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
+
+//any route that start with /auth should go into this route
+app.use('/auth',authRoute);
 
 app.use((error,req,res,next) =>{
     const message = error.message;

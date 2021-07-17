@@ -16,11 +16,11 @@ router.put('/signup',[
         })
     }).normalizeEmail(),
     body('password','password must be atleast 5 characters').trim().isLength({min:5}),
-    body('firstName').trim().not().isEmpty(),
-    body('lastName').trim().not().isEmpty(),
+    body('firstName','First name must be provided').trim().not().isEmpty(),
+    body('lastName','Last name must be provided').trim().not().isEmpty(),
 ],authController.signUp);
 
-router.put('/signup/patient',[
+router.put('/login/patient',[
     body('firstName').trim().not().isEmpty(),
     body('lastName').trim().not().isEmpty()
 ],authContoller.patientSignUp);
