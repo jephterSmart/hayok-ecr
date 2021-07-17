@@ -23,45 +23,7 @@
     margin: auto;
 
 }
-.Select{
-    width:90%;
-    margin:0 auto;
-    margin-bottom: 16px;
-   
 
-}
-.Select label{
-    display: block;
-    width: 100%;
-    font-size: 1.6rem;
-    padding: 1rem 0;
-    font-weight: 700;
-}
-.Select select{
-    width: 100%;
-    display: block;
-    margin-bottom: 12px;
-    padding: 1.2rem;
-    font-size: 1.6rem;
-    background-color: blueviolet;
-    color:white;
-    outline:none;
-    border-radius: 2px;
-
-
-}
-.Select select:active{
-    border: 1px solid rgb(197, 197, 197);
-    border-radius: 4px;
-}
-.Select option{
-    background-color: lightgray;
-    color:black;
-    outline:none;
-}
-.Select option:hover, .Select option:active{
-    background-color: lightgray;
-}
 .Line{
     color:blueviolet;
     width: 100%;
@@ -99,4 +61,34 @@
     border-radius: 4px;
     color:white;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Btn:hover{
+    border: 2px solid var(--secondaryBColor);
+    background-color: white;
+    color: var(--secondaryBColor);
+}
+.Btn:disabled{
+    color:gray;
+    border-color: gray;
+    background-color: white;
+}
+
+/* helper methods
+*/
+.Error{
+    text-align: center;
+    width: 100%;
+    font-size: 1.6rem;
+    color: red;
+    visibility: hidden;
+    /* opacity: 0; */
+
+}
+.Show{
+    transform: translateY(0);
+    /* opacity: 1; */
+    visibility: visible;
 }

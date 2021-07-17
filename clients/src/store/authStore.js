@@ -2,6 +2,7 @@ import makeStore from "./makeStore";
 
 const initialState={
     token: null,
+    userId: null,
     authenticated: false,
     loading: false,
     error:null,
@@ -9,6 +10,8 @@ const initialState={
 export const INIT_SIGNUP = "INIT_SIGNUP";
 export const ERROR_OCCUR = "ERROR_OCCUR";
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
+export const INIT_LOGIN = 'INIT_LOGIN';
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 
 const AuthReducer = (state=initialState,action) => {
     const newState = JSON.parse(JSON.stringify(state))
@@ -24,6 +27,19 @@ const AuthReducer = (state=initialState,action) => {
         case SIGNUP_SUCCESS:
             newState.loading = false;
             newState.error = null;
+            break;
+        case INIT_LOGIN:
+            newState.loading = true;
+            newState.error = null;
+            newState.authenticated = false;
+            newState.token = null;
+            break;
+        case LOGIN_SUCCESS:
+            newState.loading = false;
+            newState.error = null;
+            newState.authenticated = true;
+            newState.token = action.token;
+            newState.userId = action.userId;
             break;
             default: return state
     }
