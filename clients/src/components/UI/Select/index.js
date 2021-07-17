@@ -6,7 +6,7 @@ const Select = ({options,Label='rolling',...rest}) => {
                 <label htmlFor={Label}>{Label}</label>
                 <select id={Label} {...rest}>
                     {options.map(opt => (
-                        <option value={opt.value}>{opt.displayValue}</option>
+                        <option key ={opt.value}value={opt.value}>{opt.displayValue}</option>
                     ))}
                 </select>
                 </div>

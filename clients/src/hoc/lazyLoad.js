@@ -15,7 +15,7 @@ const asyncComponent = (importFunction) => {
         }
         render(){
             const C = this.state.component;
-            console.log(C)
+           
             return C ? <C {...this.props}/> : <Spinner /> ;
         }
     }

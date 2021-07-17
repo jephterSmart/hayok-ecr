@@ -36,7 +36,7 @@ return(
         <div className={classes.Logo} >
             <Logo />
         </div>
-        <Navigation isAuthenticated={false} />  
+        <Navigation />  
     </header>
     <div className={classes.content} >
         <main >

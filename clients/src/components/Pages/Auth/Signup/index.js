@@ -1,11 +1,20 @@
 
-import { useEffect, useRef, useState } from 'react';
+import {  useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+
 import Input from '../../../UI/Input';
 import Select from '../../../UI/Select';
+
 import classes from './create.module.css';
 
-const DetailsPage = ({next}) => {
+import { useAuthDispatch, useAuthStore } from '../../../../store/authStore';
+
+//This will help us do all the heavy lifting of signing up;
+import { signUpHandler } from '../../../../utils/authHelper';
+import Loading from '../../../UI/Spinner/loading';
+
+
+const DetailsPage = ({next,loading}) => {
   
     return(
         <div className={`${classes.Details} ${next?classes.Show: ' '} ${!next && classes.Hide}`}>
@@ -27,7 +36,7 @@ const DetailsPage = ({next}) => {
         name='cadre' required/>
         <Input label="Department:" name="department" required /> 
         </div>
-        <button type='submit' className={classes.Btn} >Sign Up</button>
+        <button type='submit' className={classes.Btn} disabled={loading}><span style={{display:'inline-block'}}>Sign Up</span> <Loading loading={loading} /></button>
         </div>
     )
 }
@@ -43,10 +52,10 @@ const RequiredDetails = ({nextHandler,next}) => {
     }
 
     return(
-        <div className={next && classes.Hide}>
+        <div className={next ? classes.Hide: " "}>
         <div className={classes.Column}>
             {error && <p style={{color:'red',fontSize:'1.4rem'}}>* Passwords do not match</p>}
-        <Input label='User Name:' name='userName' required />
+        <Input label='Email:' name='email' type='email' required />
         <Input label='Password:' name='password' type="password" required ref={PasswordRef}/>
         <Input label='Confirm Password' name='confirmPassword' type='password' required ref={ConfirmRef}/>
         
@@ -58,17 +67,23 @@ const RequiredDetails = ({nextHandler,next}) => {
 }
 const Signup = () => {
     const [next,setNext] = useState(false);
-    const submitHandler = (e) => {
+    const dispatch = useAuthDispatch();
+    const store = useAuthStore();
+    
+    const submitHandler =  (e) => {
         e.preventDefault();
-        console.log(e)
+         signUpHandler(dispatch,e);
+        
+        
     }
     const nextHandler = (e) => {
         setNext(true);
     }
     return(
         <div className={classes.SignUp}>
-            <form className={classes.Form} onSubmit={submitHandler} autoComplete>
-                 <DetailsPage next={next}/> 
+            <form className={classes.Form} onSubmit={submitHandler} autoComplete="true">
+                <p className={`${classes.Error} ${store.error ? classes.Show : " " }`} >{ '*' + store.error?.message }</p>
+                 <DetailsPage next={next} loading={store.loading}/> 
                  <RequiredDetails nextHandler={nextHandler} next={next}/>
 
                 

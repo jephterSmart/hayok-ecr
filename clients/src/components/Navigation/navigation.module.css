@@ -1,0 +1,9 @@
+.Nav{
+    width: 100%;
+    margin: 0;
+    padding:0 2.0rem;
+    display:flex;
+    justify-content: flex-end;
+    align-items: center;
+
+}
