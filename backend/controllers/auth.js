@@ -77,6 +77,7 @@ exports.login = (req,res,next) => {
             email:loginUser.email,
             userId:loginUser._id.toString()
         },process.env.SECRET,{expiresIn: '1hr'});
+       
         res.status(200).json({
             message:'login sucessful!',
             token: token,
