@@ -1,4 +1,4 @@
-import { INIT_SIGNUP,ERROR_OCCUR, SIGNUP_SUCCESS, useAuthDispatch,
+import { INIT_SIGNUP,ERROR_OCCUR, SIGNUP_SUCCESS,
   LOGIN_SUCCESS,INIT_LOGIN } from "../store/authStore";
 
 
@@ -122,13 +122,15 @@ export const doctorLoginHandler = (dispatch,e) => {
                   dispatch({
                       type:LOGIN_SUCCESS,
                       token: data.token,
-                      userId: data.userId
+                      userId: data.userId,
+                      userType: 'doctor'
                   })
                   //after successful login add to local storage, so that on page reload we don't loose
                   //tokens and information.
 
                   window.localStorage?.setItem("userId",data.userId.toString());
                   window.localStorage?.setItem("user Token", data.token.toString());
+                  window.localStorage?.setItem('userType', 'doctor');
                   e.target.reset();
                   window.location.replace('/');
             }

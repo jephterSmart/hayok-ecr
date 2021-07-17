@@ -3,9 +3,10 @@
     color:var(--primaryColor);
     text-align: center;
     padding: 1.2rem;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     border-bottom: 2px solid transparent;
     transition: border-bottom-color linear 500ms 100ms ;
+    margin-left: 1.6rem;
 }
 .NavItem a{
     text-decoration: none;
