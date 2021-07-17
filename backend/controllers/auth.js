@@ -15,8 +15,8 @@ exports.signUp = (req,res,next) => {
     }
     const email = req.body.email;
     const password = req.body.password;
-    const firstName = req.body. firstName;
-    const lastName = req.body. lastName;
+    const firstName = req.body.firstName;
+    const lastName = req.body.surname;
     const cadre = req.body.cadre;
     const department = req.body.department;
     const age = req.body.age;
