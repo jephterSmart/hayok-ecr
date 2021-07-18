@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const doctorSchema = new Schema({
+const cadreSchema = new Schema({
     email: {
         type: String,
         required: true
@@ -41,4 +41,4 @@ const doctorSchema = new Schema({
     }]
 })
 
-module.exports = mongoose.model('Doctor',doctorSchema);
+module.exports = mongoose.model('Cadre',cadreSchema);

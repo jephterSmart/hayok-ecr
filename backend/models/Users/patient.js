@@ -29,25 +29,29 @@ const patientSchema = new Schema({
     },
     ward:{
         type:String,
-        default:'0'
+        default:'05a'
 
     },
     lga:{
         type: String,
-        required:true
+        default: 'Ojo'
     },
     state:{
         type: String,
-        required:true
+        default: 'Lagos'
     },
     picture:{
-        type:String
+        type:String,
+        required: true
     },
-
-    patients:[ {
+    bmi:{
+        type:Number,
+        required: true,
+    },
+    creator: {
         type: Schema.Types.ObjectId,
-        ref: "Doctor"
-    }]
-})
+        ref: "Cadre"
+    }
+},{timestamps:true})
 
 module.exports = mongoose.model('Patient',patientSchema);
