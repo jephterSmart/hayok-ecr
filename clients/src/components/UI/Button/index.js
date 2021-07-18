@@ -9,7 +9,7 @@ const Button = ({filled,className,fullWidth,raised, children, ...rest}) => {
     if(raised) names.push(classes.shadow);
     
     return (
-        <button className={names.join(' ')}>{children}</button>
+        <button className={names.join(' ')} {...rest} >{children}</button>
     )
 }
 

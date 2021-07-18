@@ -20,3 +20,11 @@
 .Actions button{
     width: 20%;
 }
+.Link{
+    text-decoration: none;
+    width: 100%;
+    color:inherit;
+}
+.Link:active{
+    color:inherit;
+}

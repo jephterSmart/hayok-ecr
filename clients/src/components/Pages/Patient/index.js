@@ -1,4 +1,5 @@
-import { useState,useEffect } from "react";
+import { useState } from "react";
+import {Link} from 'react-router-dom';
 
 import Button from "../../UI/Button";
 import Card from "../../UI/Card";
@@ -14,12 +15,7 @@ import classes from './patient.module.css';
 import Pagination from "../../Pagination";
 
 const Patient = () => {
-    const addPatientHandler = () => {
-        window.location.href = '/user/add-patient';
-    }
-    const viewPatientStatHandler = () => {
-        window.location.href = '/user/view-patients-stat';
-    }
+    
     const [patients,setPatients] = useState([]);
     const [currentPage,setCurrentPage] = useState(1);
     const [error,setError] = useState('')
@@ -56,8 +52,8 @@ const Patient = () => {
     return(
         <div className={classes.Patient}>
             <div className={classes.Actions}>
-                <Button filled onClick={addPatientHandler} raised>Add Patients</Button>
-                <Button filled onClick={viewPatientStatHandler} raised>View Patients statistics</Button>
+                <Button filled  raised><Link to='/user/add-patient' className={classes.Link}>Add Patients</Link></Button>
+                <Button filled raised><Link to='/user/view-stat' className={classes.Link}>View Patients statistics</Link></Button>
             </div>
             <div>
                 <p>Patients we have in our system</p>

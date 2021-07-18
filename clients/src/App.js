@@ -3,7 +3,7 @@ import React ,{useEffect} from 'react';
 import {Route, Redirect, Switch} from 'react-router-dom';
 
 //our auth store
-import { useAuthDispatch,LOGIN_SUCCESS,useAuthStore } from './store/authStore';
+import { useAuthDispatch,LOGIN_SUCCESS,useAuthStore,LOGOUT } from './store/authStore';
 
 //pages to render
 import Home from './components/HomePage';
@@ -21,6 +21,7 @@ import lazyLoad from './hoc/lazyLoad';
 //load pages asynchronously
 const LoginPage = lazyLoad(() => import('./components/Pages/Auth/Login'));
 const SignUpPage = lazyLoad(() => import('./components/Pages/Auth/Signup'));
+const AddPatient = lazyLoad(() => import('./components/Pages/AddPatient'));
 
 
 
@@ -33,7 +34,17 @@ const App = () => {
     if(localStorage.getItem('user Token')){
       let token = localStorage.getItem('user Token');
       let userId = localStorage.getItem('userId');
-      let userType = localStorage.getItem('userType')
+      let userType = localStorage.getItem('userType');
+      let expiryDate = localStorage.getItem('expiryDate');
+      
+      if (new Date(expiryDate) <= new Date()) {
+        dispatch({type:LOGOUT});
+        localStorage.removeItem('token');
+        localStorage.removeItem('expiryDate');
+        localStorage.removeItem('userId');
+        localStorage?.removeItem('userType');
+        return;
+      }
       dispatch({
         type:LOGIN_SUCCESS,
         token: token,
@@ -68,6 +79,9 @@ if(authStore.authenticated && authStore.userType === 'doctor'){
     <Switch>
       <Route path='/user/all-patients'>
         <Patient />
+      </Route>
+      <Route path='/user/add-patient'>
+        <AddPatient />
       </Route>
       <Route path='/auth/logout' >
         <Logout />

@@ -1,0 +1,69 @@
+
+.AddPatient{
+    width: 100%;
+    padding:10%;
+    margin-top: -3.2rem;
+}
+.AddPatient h1{
+    font-size: 5.2rem;
+    width: 100%;
+    text-align: center;
+}
+.Grid{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.Grid>*{
+    margin-right: 2.2rem;
+}
+.Select{
+    margin-top: 1.2rem;
+}
+.Select select{
+    min-height: 5.0rem;
+    background-color: rgb(152, 214, 255) ;
+    color: black;
+}
+.Select select:active{
+    border: 1px solid rgb(187, 187, 187);
+    border-radius: 4px;
+}
+.Hide{
+    display:none;
+}
+.Picture{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+.VideoContainer, .Canvas{
+    position: relative;
+    width: 650px;
+    height: 490px;
+    min-height: 400px;
+}
+.VideoContainer button, .Canvas button{
+    position: absolute;
+    background: transparent;
+    left: calc(50% - 15ch);
+    top: calc(50% - 5ch);
+}
+
+.Canvas button{
+    
+    width: 250px;
+}
+.Submit{
+    width: 300px;
+    margin-top:3.2rem;
+    
+}
+.Normal{
+    visibility: hidden;
+}
+.Error{
+    font-size: 1.5rem;
+    color:red;
+}

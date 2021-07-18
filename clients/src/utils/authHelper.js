@@ -1,5 +1,5 @@
 import { INIT_SIGNUP,ERROR_OCCUR, SIGNUP_SUCCESS,
-  LOGIN_SUCCESS,INIT_LOGIN } from "../store/authStore";
+  LOGIN_SUCCESS,INIT_LOGIN,LOGOUT } from "../store/authStore";
 
 
 export const signUpHandler  = (dispatch,e) => {
@@ -67,6 +67,15 @@ export const signUpHandler  = (dispatch,e) => {
 }
 
 export const doctorLoginHandler = (dispatch,e) => {
+  const setAutoLogout = milliseconds => {
+    setTimeout(() => {
+      dispatch({type:LOGOUT});
+      localStorage.removeItem('token');
+      localStorage.removeItem('expiryDate');
+      localStorage.removeItem('userId');
+      localStorage?.removeItem('userType');
+    }, milliseconds);
+  };
   let url = 'http://localhost:8080/auth/login';
   
   let body ={};
@@ -131,6 +140,12 @@ export const doctorLoginHandler = (dispatch,e) => {
                   window.localStorage?.setItem("userId",data.userId.toString());
                   window.localStorage?.setItem("user Token", data.token.toString());
                   window.localStorage?.setItem('userType', 'doctor');
+                  const remainingMilliseconds = 60 * 60 * 1000;
+                  const expiryDate = new Date(
+                    new Date().getTime() + remainingMilliseconds
+                  );
+                  localStorage.setItem('expiryDate', expiryDate.toISOString());
+                  setAutoLogout(remainingMilliseconds);
                   e.target.reset();
                   window.location.replace('/');
             }

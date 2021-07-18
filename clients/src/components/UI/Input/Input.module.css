@@ -20,12 +20,42 @@
     font-size: 1.6rem;
     outline: none;
     background-color: rgb(152, 214, 255);
-    border:none;
     margin-bottom: 16px;
     border: 1px solid var(--secondaryBColor);
     border-radius: 2px;
 }
+.Input.InputError input, .Input.InputError textarea{
+    background-color: salmon ;
+    color:red;
+    border-color:red;
+}
 .Input input:active, .Input input:focus{
     border: 1px solid rgb(187, 187, 187);
     border-radius: 4px;
+}
+.Normal{
+    visibility: hidden;
+}
+.Error{
+    visibility: visible;
+    color: red;
+    font-size: 1.4rem;
+    font-weight:500;
+    width: 100%;
+    text-align: left;
+}
+.Error::before{
+    content: '*';
+    display: inline-block;
+    padding-right: 0.4rem;
+}
+.Helper{
+    visibility: visible;
+    color:var(--primaryColor);
+    width: 100%;
+    font-size: 1.5rem;
+    background-color: lightgray;
+}
+.Error.Helper{
+    color:red;
 }
