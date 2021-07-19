@@ -2,7 +2,7 @@ const {validationResult}  = require('express-validator/check');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const DoctorModel = require('../models/Users/doctor');
+const DoctorModel = require('../models/Users/cadre');
 const PatientModel = require('../models/Users/patient');
 
 

@@ -5,15 +5,33 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+
 //routes to go into
-const authRoute = require('./routes/auth')
+const authRoute = require('./routes/auth');
+const patientRoute = require('./routes/patient');
+
 const app = express();
 
+
 app.use(cors());
-app.use(bodyParser.json());
+
+//These are my custom headers
+app.use((req,res,next) => {
+            res.setHeader('Access-Control-Allow-Headers','Content-Type, Authorization, PerPage, CurrentPage')//which headers will be used to access my resources
+            next();
+      
+})
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
+
+
+
+//make path publicly available
+app.use('/images',express.static(path.join(__dirname,'images')));
 
 //any route that start with /auth should go into this route
 app.use('/auth',authRoute);
+app.use('/user',patientRoute);
 
 app.use((error,req,res,next) =>{
     const message = error.message;

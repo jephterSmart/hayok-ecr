@@ -8,6 +8,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import ErrorBoundary from './hoc/ErrorBoundary';
+
+//store
 import {AuthProvider} from './store/authStore';
 
 const app = (

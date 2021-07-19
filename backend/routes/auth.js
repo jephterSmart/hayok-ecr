@@ -2,7 +2,7 @@ const express = require('express');
 const {body} = require('express-validator/check');
 
 const authController = require('../controllers/auth');
-const Doctormodel = require('../models/Users/doctor');
+const Doctormodel = require('../models/Users/cadre');
 
 
 const router = express.Router();

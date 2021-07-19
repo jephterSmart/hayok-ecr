@@ -1,0 +1,61 @@
+.Skeleton {
+    width: 100%;
+    min-height: 300px;
+    background-repeat: no-repeat;
+    margin-bottom: 20px;
+    border-radius:6px;
+    box-shadow: 0 10px 45px rgba(10,10,10, .2);
+    animation: loading 2.5s infinite both ;
+    background-image: 
+    linear-gradient(
+        90deg, 
+        rgba(220, 220, 220, 0) 0, 
+        rgba(220,220,220, .8) 50%, 
+        rgba(220,220,220, 0) 100%
+      ),
+      /* layer 2: avatar */
+      /* white circle with 125px radius */
+      radial-gradient(circle 75px, lightgrey 99%, transparent 0),
+      /* layer 1: title */
+      /* white rectangle with 40px height */
+      linear-gradient(lightgrey 80px, transparent 0),
+      linear-gradient(lightgrey 80px, transparent 0),
+      /* layer 0: card bg */
+      /* gray rectangle that covers whole element */
+      linear-gradient(rgb(77, 77, 77) 100%, transparent 0);
+
+    background-size:
+    400px 300px,  /* blur size */
+    150px 150px,  /* avatar */
+    200px 80px, /* title */
+    250px 80px,
+    100% 100%;  /* card bg */
+    background-position:
+    -150% 0,
+     24px 24px,  /* avatar */
+     280px 24px, /* title */
+     80% 24px,
+     0 0; 
+  }
+  
+  
+  @keyframes loading {
+      from{
+        background-position:
+        -150% 0,
+        24px 24px,  /* avatar */
+        280px 24px, /* title */
+        80% 24px,
+        0 0; 
+      }
+    to {
+      background-position:
+        350% 0,        
+         24px 24px,  /* avatar  */
+         280px 24px,  /* title  */
+         80% 24px,
+         0 0
+      ;
+    }
+  } 
+ 

@@ -1,0 +1,74 @@
+.Card{
+    width: 100%;
+    background-color: var(--primaryColor);
+    color:white;
+    display:flex;
+    justify-content: space-between;
+    padding:1.4rem 1.2rem ;
+    margin:0.8rem 0;
+}
+.Card:first-child{
+    margin-top: 1.4rem;
+    border-top-left-radius: 1.8rem;
+    border-top-right-radius: 1.8rem;
+
+}
+.Card:last-child{
+    border-bottom-left-radius: 1.8rem;
+    border-bottom-right-radius: 1.8rem;
+}
+.Card:hover{
+    background-color: #324fd1;
+    box-shadow: 1px 3px 5px rgba(10,10,10,0.2);
+    z-index: 60;
+    transform: translateZ(1000);
+
+}
+.Card:hover .Img img{
+    border: 2px solid var(--secondaryColor);
+}
+.Left{
+    display: flex;
+    justify-content: flex-start;
+    max-width: 600px;
+}
+.Img{
+    width:250px;
+    height: 250px;
+    background-color: var(--secondaryColor);
+}
+.Img img{
+    max-width: 100%;
+    border-radius: 50%;
+    max-height: 250px;
+}
+.Data{
+    max-width: 20ch;
+    margin-left: 1.6rem;
+    padding: 0.6rem;
+}
+.Data p{
+    font-size: 1.4rem;
+    padding: 0;
+}
+.Data p:first-child{
+    font-weight: 700;
+    padding-bottom: 0.6rem;
+
+}
+
+.Right{
+    justify-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+.Right p{
+    font-size: 1.4rem;
+    font-weight: 300;
+    color:rgb(230, 230, 230);
+    opacity:0.8;
+    text-align: right;
+}
+
