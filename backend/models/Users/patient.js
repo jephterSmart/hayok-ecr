@@ -12,7 +12,7 @@ const patientSchema = new Schema({
         required:true
     },
     age:{
-        type: Number,
+        type: String,
         required: true
     },
     height:{
@@ -40,7 +40,7 @@ const patientSchema = new Schema({
         type: String,
         default: 'Lagos'
     },
-    picture:{
+    imageUrl:{
         type:String,
         required: true
     },
