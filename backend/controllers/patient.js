@@ -48,21 +48,32 @@ exports.postPatient = (req,res,next) => {
         throw error;
         
     }
-    const filePath = path.join(__dirname,'..','images',image.generatedAt+firstName+'.png');
-   console.log(filePath);
+    
+    //Check if the user already exists in our system.
+     PatientModel.findOne({firstName: firstName,lastName:lastName})
+         .then(result => {
+             if(result) 
+             throw new Error("We can't have duplicate User in our system");
+         })
+         .catch(err => {
+             if(!err.statusCode){
+                 err.statusCode = 500;
+             }
+             next(err);
+         })
+     
+    const filePath = path.join(__dirname,'..','images',lastName+firstName+'.png');
+  
    
    //ensure that the image is saved before continueing
-   fs.writeFileSync(filePath, image.png);
+   
+   fs.writeFileSync(filePath, Buffer.from(image.png,'base64'));
 
-
-    
-    
-    
     //calculate body mass index (BMI)
-    const bmi = weight/(height * height);
+    const bmi = weight/(height * height) || 0;
     const patient = new PatientModel({
         firstName,lastName,
-        imageUrl: filePath.replace('\\','/'), //for it to be compatible with windows
+        imageUrl: path.join('images',lastName+firstName+'.png').replace('\\','/'), //for it to be compatible with server system
         creator: req.userId,
         age, ward,height,weight,bmi,lga,state,gender
     })
@@ -75,7 +86,7 @@ exports.postPatient = (req,res,next) => {
             message:'patient created',
             patient:updatedPatient,
         })
-    
+        
     })
     .catch(err => {
         if(!err.statusCode){
