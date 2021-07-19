@@ -20,11 +20,14 @@ export const  fetchPatients = (token,perPage,currentPage) => {
     }).catch(err => {throw err})
 }
 
-export const postFormData = (token,formData) => {
+export const postFormData = (token,formData,cb) => {
     const uri = 'http://localhost:8080/user/add-patient';
-   return fetch(uri,{
+   fetch(uri,{
         method:"POST",
-        Authorization: 'Bearer '+ token,
+      headers:{
+          "Content-Type":'application/json',
+          "Authorization": 'Bearer '+ token
+      },
         body:JSON.stringify(formData)
     }).then(res => {
         if(res.status === 422){
@@ -33,12 +36,14 @@ export const postFormData = (token,formData) => {
         if(res.status !== 201 || res.status !== 200){
             throw new Error('Make sure every thing is fill and check your network');
         }
+        
         return res.json();
     })
     .then(data => {
-        return data
+        
+        cb(null, data);
     })
     .catch(err => {
-        throw new Error(err.message || "A server Error")
+        cb(new Error(err.message || "A server Error",null));
     })
 }

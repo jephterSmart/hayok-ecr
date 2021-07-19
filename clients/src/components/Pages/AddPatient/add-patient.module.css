@@ -44,15 +44,15 @@
     height: 490px;
     min-height: 400px;
 }
-.VideoContainer button, .Canvas button{
+.VideoContainer div, .Canvas div{
     position: absolute;
     background: transparent;
-    left: calc(50% - 15ch);
+    left: calc(50% - 10ch);
     top: calc(50% - 5ch);
 }
 
-.Canvas button{
-    
+.Canvas div{
+    left: calc(50% - 15ch);
     width: 250px;
 }
 .Submit{

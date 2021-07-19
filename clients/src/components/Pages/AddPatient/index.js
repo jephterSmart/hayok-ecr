@@ -1,8 +1,11 @@
 import {useState,useRef} from 'react';
 
+import { useHistory,Link } from "react-router-dom";
+
 //components
 import Input  from '../../UI/Input';
 import Button from '../../UI/Button';
+import ButtonLike from '../../UI/Button/ButtonLike';
 import Select from '../../UI/Select';
 import Loading from '../../UI/Spinner/loading';
 
@@ -33,7 +36,12 @@ const valueArr = ["abia","adamawa","akwa Ibom","anambra","bauchi","bayelsa","ben
     "yobe","zamfara"]
 const stateOptions =valueArr.map(create);
 stateOptions.unshift({value:'fct',displayValue:'FCT'});
+
+
+
 const AddPatient = () => {
+    
+
     const authStore = useAuthStore();
     
     //This controls form
@@ -82,7 +90,7 @@ const AddPatient = () => {
     const captureHandler = () => {
         const context = CanvasRef.current.getContext('2d');
         context?.drawImage(VideoRef.current,0,0,650,490);
-        const Image = CanvasRef.current.toDataURL()
+        const Image = CanvasRef.current.toDataURL();
         setFormData(form => ({...form,imageData:{
             generatedAt: new Date().toISOString(),
             png: Image.split(',')[1]
@@ -120,92 +128,115 @@ const AddPatient = () => {
         
     }
     const [loading,setLoading] = useState(false);
+
+    const LinkRef = useRef(); 
+    const history = useHistory();
     const submitHandler = e => {
         e.preventDefault();
         setLoading(true);
-        postFormData(authStore.token,formData)
-        .then(formData => {
-            setLoading(false);
-            console.log(formData);
-
+   
+        postFormData(authStore.token,formData,(err,formData) => {
+            if(formData){
+                setLoading(false);
+                setTouched(false);
+                setCapture(false);
+                history.push('/user/all-patients');
+                LinkRef.current.click();
+                return;
+                }
+                
+            if(err){
+                setFormError(error => ({...error, server: err.message || 
+                    "An error Occured in the server"}));
+                    setLoading(false);
+                    setTouched(false);
+                    setCapture(false);
+                    return;
+            }
+          
+            
         })
-        .catch(err => {
-            setFormError(error => ({...error, server: err.message || 
-            "An error Occured in the server"}));
-            setLoading(false);
-        })
+        
     }
+   
     
     return(
-        <section className={classes.AddPatient}>
-            <h1>Add Patient</h1>
-            <p className={`${classes.Normal} ${formError.server? classes.Error : " "}`}>{formError.server}</p>
-            <div>
-                <div className={classes.Grid}>
-                    <Input required onChange={changeHandler} name="firstName" value={formData.firstName}
-                    errormessage={formError.firstName} label='First Name:'/>
-                    <Input onChange={changeHandler} name="lastName" value={formData.lastName}
-                    errormessage={formError.lastName} label='Surname:' />
-                </div>
-                <div className={classes.Grid}>
-                <Input required onChange={changeHandler} name="age" value={formData.age}
-                    errormessage={formError.age} label='Age:' type='date'/>
-                <Select onChange={changeHandler} name='gender' value= {formData.gender} 
-                options={[{value:'male',displayValue:'Male'},{value:'female',displayValue:'Female'}]}
-                Label="Gender:" errormessage={formError.gender} className={classes.Select}/>
-                </div>
-                <div className={classes.Grid}>
-                <Input required onChange={changeHandler} name="weight" value={formData.weight}
-                    errormessage={formError.weight}  label="Weight:" type='number' 
-                    placeholder='Weight should be in Kg'/>
-                <Input required onChange={changeHandler} name="height" value={formData.height}
-                    errormessage={formError.height} label='Height' type='number' 
-                    placeholder='Height should be in meters'/>
-                <Input required onChange={changeHandler} name="ward" value={formData.ward}
-                    errormessage={formError.ward} label='Ward:'/>
-                </div>
-                <div className={classes.Grid}>
-                
-                <Input required onChange={changeHandler} name="lga" value={formData.lga}
-                    errormessage={formError.lga} label="Local Government Area:"/>
-                <Select onChange={changeHandler} name='state' value= {formData.state} 
-                options={stateOptions} className={classes.Select}
-                Label="State:" errormessage={formError.state}/>
-                </div>
-                <div >
-                <p className={`${classes.Normal} ${formError.capture? classes.Error : " "}`}>{formError.capture}</p>
-                    {
-                        !capture ?(
-                            <Button onClick={startCaptureHandler} fullWidth filled >Start Image Capture</Button>
-                        ):(
-                            <div className={classes.Picture}>
-                                <div className={`${classes.Canvas} ${!finishSnaping? classes.Hide : " "}`}>
-                                    <canvas ref={CanvasRef} width='650' height='490' ></canvas>
-                                    <Button raised onClick={() => {
-                                        console.log("I am clicked");
-                                        startCaptureHandler();
-                                        setFinishSnaping(false);
-                                    }}>Re - Capture Picture</Button>
-                                </div>
-                                   
-                                <div className={`${classes.VideoContainer} ${finishSnaping? classes.Hide : " "}`}>
-                                <video playsInline ref={VideoRef} width='650' height='490' ></video>
-                                <Button onClick={captureHandler} className={classes.Btn}>
-                                    Take Photo
-                                </Button>
-                            </div>
-                                 
-                            </div>
-                        )
-                    }
-                    
-                    
-                </div>
-                <Button disabled ={!capture || touched|| checkFormError(formError) || loading} 
-                onClick={submitHandler} filled raised className={classes.Submit}>Submit
-                <Loading loading={loading} /></Button>
-            </div>
-        </section>
+        <>
+        
+             <section className={classes.AddPatient}>
+             <h1>Add Patient</h1>
+             <p className={`${classes.Normal} ${formError.server? classes.Error : " "}`}>{formError.server}</p>
+             <form onSubmit={submitHandler}>
+                 <div className={classes.Grid}>
+                     <Input required onChange={changeHandler} name="firstName" value={formData.firstName}
+                     errormessage={formError.firstName} label='First Name:'/>
+                     <Input onChange={changeHandler} name="lastName" value={formData.lastName}
+                     errormessage={formError.lastName} label='Surname:' />
+                 </div>
+                 <div className={classes.Grid}>
+                 <Input required onChange={changeHandler} name="age" value={formData.age}
+                     errormessage={formError.age} label='Date of Birth:' type='date'/>
+                 <Select onChange={changeHandler} name='gender' value= {formData.gender} 
+                 options={[{value:'male',displayValue:'Male'},{value:'female',displayValue:'Female'}]}
+                 Label="Gender:" errormessage={formError.gender} className={classes.Select}/>
+                 </div>
+                 <div className={classes.Grid}>
+                 <Input required onChange={changeHandler} name="weight" value={formData.weight}
+                     errormessage={formError.weight}  label="Weight (in Kg):" type='number' 
+                     placeholder='Weight should be in Kg'/>
+                 <Input required onChange={changeHandler} name="height" value={formData.height}
+                     errormessage={formError.height} label='Height (in meters):' type='number' 
+                     placeholder='Height should be in meters'/>
+                 <Input required onChange={changeHandler} name="ward" value={formData.ward}
+                     errormessage={formError.ward} label='Ward:'/>
+                 </div>
+                 <div className={classes.Grid}>
+                 
+                 <Input required onChange={changeHandler} name="lga" value={formData.lga}
+                     errormessage={formError.lga} label="Local Government Area:"/>
+                 <Select onChange={changeHandler} name='state' value= {formData.state} 
+                 options={stateOptions} className={classes.Select}
+                 Label="State:" errormessage={formError.state}/>
+                 </div>
+                 <div >
+                 <p className={`${classes.Normal} ${formError.capture? classes.Error : " "}`}>{formError.capture}</p>
+                     {
+                         !capture ?(
+                             <ButtonLike onClick={startCaptureHandler} fullWidth filled >Start Image Capture
+                             </ButtonLike>
+                         ):(
+                             <div className={classes.Picture}>
+                                 <div className={`${classes.Canvas} ${!finishSnaping? classes.Hide : " "}`}>
+                                     <canvas ref={CanvasRef} width='650' height='490' ></canvas>
+                                     <ButtonLike raised onClick={() => {
+                                         console.log("I am clicked");
+                                         startCaptureHandler();
+                                         setFinishSnaping(false);
+                                     }}>Re - Capture Picture</ButtonLike>
+                                 </div>
+                                    
+                                 <div className={`${classes.VideoContainer} ${finishSnaping? classes.Hide : " "}`}>
+                                 <video playsInline ref={VideoRef} width='650' height='490' ></video>
+                                 <ButtonLike onClick={captureHandler} className={classes.Btn}>
+                                     Take Photo
+                                 </ButtonLike>
+                             </div>
+                                  
+                             </div>
+                         )
+                     }
+                     
+                     
+                 </div>
+                 <Button disabled ={!capture || touched|| checkFormError(formError) || loading} 
+                 type='submit' filled raised className={classes.Submit}>Submit
+                 <Loading loading={loading} /></Button>
+             </form>
+             <div style={{display:'none'}} ref={LinkRef}><Link to='/user/all-patients' /> </div>
+         </section>
+       
+       
+        </>
     )
 }
 
