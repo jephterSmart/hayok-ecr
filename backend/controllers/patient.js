@@ -1,6 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 
+const atob = require('atob');
+
 const {validationResult} = require('express-validator/check');
 
 const PatientModel = require('../models/Users/patient')
@@ -35,7 +37,9 @@ exports.getPatients = (req,res,next) => {
 
 exports.postPatient = (req,res,next) => {
     const {firstName,lastName,age,gender,height,weight,ward,lga,state} = req.body;
-    const image = req.file;
+
+    const image = req.body.imageData;
+
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         const error = new Error('There is a validation error');
@@ -44,16 +48,21 @@ exports.postPatient = (req,res,next) => {
         throw error;
         
     }
-    if(!image){
-        const error = new Error('Picture is required for the patient');
-        error.statusCode = 422; //validation error
-        throw error;
-    }
+    const filePath = path.join(__dirname,'..','images',image.generatedAt+firstName+'.png');
+   console.log(filePath);
+   
+   //ensure that the image is saved before continueing
+   fs.writeFileSync(filePath, image.png);
+
+
+    
+    
+    
     //calculate body mass index (BMI)
     const bmi = weight/(height * height);
     const patient = new PatientModel({
         firstName,lastName,
-        imageUrl: image.path.replace('\\','/'), //for it to be compatible with windows
+        imageUrl: filePath.replace('\\','/'), //for it to be compatible with windows
         creator: req.userId,
         age, ward,height,weight,bmi,lga,state,gender
     })
