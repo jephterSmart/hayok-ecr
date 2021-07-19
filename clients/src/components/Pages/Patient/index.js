@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {Link} from 'react-router-dom';
 
 import Button from "../../UI/Button";
@@ -21,17 +21,17 @@ const Patient = () => {
     const [error,setError] = useState('')
     const authStore = useAuthStore();
 
-    // useEffect(()=> {
-    //    fetchPatients(authStore.token,10,currentPage)
-    //    .then(pats =>{
-    //     setPatients(pats);
-    //     setCurrentPage(1);
-    //    })
-    //    .catch(err => {
-    //        setError(err.message);
-    //    })
+    useEffect(()=> {
+       fetchPatients(authStore.token,10,currentPage)
+       .then(pats =>{
+        setPatients(pats.patients);
+        setCurrentPage(1);
+       })
+       .catch(err => {
+           setError(err.message);
+       })
         
-    // },[]);
+    },[]);
     const nextHandler = () => {
         fetchPatients(authStore.token,10,currentPage+1).then(data => {
             setPatients(data);
@@ -49,6 +49,7 @@ const Patient = () => {
             setCurrentPage(page => page - 1)
         })
     }
+    console.log(patients)
     return(
         <div className={classes.Patient}>
             <div className={classes.Actions}>
@@ -56,8 +57,9 @@ const Patient = () => {
                 <Button filled raised><Link to='/user/view-stat' className={classes.Link}>View Patients statistics</Link></Button>
             </div>
             <div>
-                <p>Patients we have in our system</p>
-                <div>
+                <h1>Patients we have in our system:</h1>
+                {error ? <p style={{color:'red'}}>{error} - Check your connection and reload the page</p> :(
+                    <div>
                     {
                         patients.length>0 ?(
                             patients.map(pat => <Card key={pat._id} data={pat}/>)
@@ -71,6 +73,8 @@ const Patient = () => {
                         )
                     }
                 </div>
+                )}
+                
                 {patients.length > 0 && <Pagination 
                 nextHandler={nextHandler} currentPage={currentPage}
                 previousHandler={previousHandler} totalItem={patients.length}

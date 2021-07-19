@@ -1,0 +1,48 @@
+.Backdrop{
+    width:100vw;
+    min-height: 100vh;
+    position: fixed;
+    background-color: rgba(10, 10, 10, 0.3);
+    z-index: 200;
+    top:0;
+    left:0;
+}
+.Modal{
+    background-color: white;
+    border-radius: 2.4rem;
+    padding:1.6rem;
+    position: absolute;
+    width:50%;
+    margin: 0 auto;
+    top:10vh;
+    left: 25%;
+    height: 55rem;
+}
+.PrimaryAction{
+    width: 100%;
+    text-align: right;
+    position: relative;
+    margin-right: 0.8rem;
+    height:1.5rem ;
+}
+.PrimaryAction span{
+    display:inline-block;
+    width: 1.5rem;
+    height:4px;
+    position: absolute;
+    background-color: rgb(121, 116, 116);
+    top: calc(50% - 2px);
+    right:0;
+    transform-origin: 50% 50%;
+    transform: rotate(45deg);
+}
+.PrimaryAction span:last-child{
+    transform: rotate(-45deg);
+}
+.Action{
+    width:100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top:1.6rem;
+}

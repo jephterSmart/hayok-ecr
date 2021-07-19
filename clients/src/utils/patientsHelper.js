@@ -5,9 +5,9 @@ export const  fetchPatients = (token,perPage,currentPage) => {
     return fetch(url,{
         method:"GET",
         headers:{
-            Authorization: 'Bearer ' + token,
-            PerPage: perPage,
-            CurrentPage: currentPage
+            "Authorization": 'Bearer ' + token,
+            "PerPage": perPage,
+            "CurrentPage": currentPage
         }
     }).then(res => {
         if (res.status !== 200) {
