@@ -1,0 +1,11 @@
+.DoctorSelect{
+    max-height: 4.0rem;
+    display: inline-flex;
+    justify-content: flex-end;
+    align-items: center;
+    max-width: 100%;
+}
+.DoctorSelect>*{
+    margin: 0;
+    max-height: 4.0rem;
+}

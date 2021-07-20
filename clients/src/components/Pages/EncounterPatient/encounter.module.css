@@ -1,0 +1,50 @@
+
+.Encounter{
+    width: 100%;
+    padding:10%;
+    margin-top: -3.2rem;
+}
+.Encounter h1{
+    font-size: 5.2rem;
+    width: 100%;
+    text-align: center;
+}
+.Grid{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.Grid>*{
+    margin-right: 2.2rem;
+}
+.Grid>*:last-child{
+    margin-right: 1rem;
+}
+.Select{
+    margin-top: 1.2rem;
+}
+.Select select{
+    min-height: 5.0rem;
+    background-color: rgb(152, 214, 255) ;
+    color: black;
+}
+.Select select:active{
+    border: 1px solid rgb(187, 187, 187);
+    border-radius: 4px;
+}
+.Hide{
+    display:none;
+}
+
+.Submit{
+    width: 300px;
+    margin-top:3.2rem;
+    
+}
+.Normal{
+    visibility: hidden;
+}
+.Error{
+    font-size: 1.5rem;
+    color:red;
+}

@@ -1,0 +1,48 @@
+.Popup{
+    max-width: 45%;
+    padding:1.4rem;
+    background-color: var(--primaryColor);
+    color: white;
+    position: fixed;
+    z-index: 500;
+    top: 10vw;
+    right:0;
+    transform: translateX(0);
+    transform-origin: 0% 50%;
+    transition: transform linear;
+    cursor: pointer;
+}
+.Popup.Out{
+    transform: translateX(-300%);
+}
+.Popup::after{
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    top: calc(50% - 20px);
+    right:-20px;
+    background: transparent;
+    border:40px solid var(--primaryColor);
+    border-color: transparent;
+    border-left-color: var(--primaryColor);
+}
+.Popup:hover{
+    background-color: blue;
+}
+.Popup:hover::after{
+    background-color: blue;
+}
+.Danger{
+    background-color: red;
+}
+.Danger::after{
+    border-left-color: red;
+}
+.Danger:hover::after{
+    border-left-color: darkred;
+}
+.Danger:hover{
+    background-color: darkred;
+}

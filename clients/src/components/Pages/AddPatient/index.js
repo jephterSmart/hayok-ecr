@@ -27,7 +27,7 @@ const initialData = {
     weight: 0,
     ward: '',
     lga:'',
-    state:''
+    state:'fct'
 }
 const create = value => ({value,displayValue:value[0].toUpperCase()+ value.substring(1)});
 const valueArr = ["abia","adamawa","akwa Ibom","anambra","bauchi","bayelsa","benue","borno","cross River"
@@ -178,7 +178,8 @@ const AddPatient = () => {
                      errormessage={formError.age} label='Date of Birth:' type='date'/>
                  <Select onChange={changeHandler} name='gender' value= {formData.gender} 
                  options={[{value:'male',displayValue:'Male'},{value:'female',displayValue:'Female'}]}
-                 Label="Gender:" errormessage={formError.gender} className={classes.Select}/>
+                 Label="Gender:" errormessage={formError.gender} className={classes.Select}
+                 defaultValue='male'/>
                  </div>
                  <div className={classes.Grid}>
                  <Input required onChange={changeHandler} name="weight" value={formData.weight}
@@ -195,7 +196,7 @@ const AddPatient = () => {
                  <Input required onChange={changeHandler} name="lga" value={formData.lga}
                      errormessage={formError.lga} label="Local Government Area:"/>
                  <Select onChange={changeHandler} name='state' value= {formData.state} 
-                 options={stateOptions} className={classes.Select}
+                 options={stateOptions} className={classes.Select} defaultValue='fct'
                  Label="State:" errormessage={formError.state}/>
                  </div>
                  <div >

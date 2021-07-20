@@ -33,6 +33,11 @@
     border: 1px solid rgb(187, 187, 187);
     border-radius: 4px;
 }
+.Input input:disabled{
+    color:var(--primaryColor);
+    border-color: gray;
+    box-shadow: 1px 3px 6px rgba(30,30,30,0.3);
+}
 .Normal{
     visibility: hidden;
 }

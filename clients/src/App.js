@@ -22,6 +22,7 @@ import lazyLoad from './hoc/lazyLoad';
 const LoginPage = lazyLoad(() => import('./components/Pages/Auth/Login'));
 const SignUpPage = lazyLoad(() => import('./components/Pages/Auth/Signup'));
 const AddPatient = lazyLoad(() => import('./components/Pages/AddPatient'));
+const EncounterPatient = lazyLoad(() => import('./components/Pages/EncounterPatient'));
 
 
 
@@ -82,6 +83,9 @@ if(authStore.authenticated && authStore.userType === 'doctor'){
       </Route>
       <Route path='/user/add-patient'>
         <AddPatient />
+      </Route>
+      <Route path='/user/patients/:patientId'>
+        <EncounterPatient />
       </Route>
       <Route path='/auth/logout' >
         <Logout />
