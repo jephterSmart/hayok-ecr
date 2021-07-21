@@ -7,7 +7,7 @@ import Select from '../../../UI/Select';
 
 import classes from './create.module.css';
 
-import { useAuthDispatch, useAuthStore } from '../../../../store/authStore';
+import { useAuthDispatch, useAuthStore,LOGOUT } from '../../../../store/authStore';
 
 //This will help us do all the heavy lifting of signing up;
 import { signUpHandler } from '../../../../utils/authHelper';
@@ -79,6 +79,9 @@ const Signup = () => {
     const nextHandler = (e) => {
         setNext(true);
     }
+    useEffect(() => {
+        dispatch({type:LOGOUT})
+    },[])
     return(
         <div className={classes.SignUp}>
             <form className={classes.Form} onSubmit={submitHandler} autoComplete="true">

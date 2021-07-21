@@ -88,3 +88,40 @@ exports.login = (req,res,next) => {
         next(err)
     })
 }
+
+exports.patientLogin = (req,res,next) => {
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        const error = new Error(errors.array()[0].msg);
+        error.statusCode = 422;
+        throw error;
+    }
+    const firstName = req.body.firstName.toLowerCase();
+    const lastName = req.body.lastName.toLowerCase();
+   //find the user in our database
+    PatientModel.findOne({firstName,lastName})
+    .then(user =>{
+        if(!user){
+            const error = new Error('Not a registered User, Ensure that the names are entered appropriately');
+            error.statusCode = 401;
+            throw error;
+        }
+        const token = jwt.sign({
+            firstName:user.firstName,
+            lastName:user.lastName,
+            userId:user._id.toString()
+        },process.env.SECRET,{expiresIn: '3hr'});
+        res.status(200).json({
+            message:'login sucessful!',
+            token: token,
+            userId:loginUser._id.toString()
+        })
+        
+    })
+   
+    .catch(err => {
+        if(!err.statusCode) err.statusCode = 500;
+        next(err)
+    })
+}

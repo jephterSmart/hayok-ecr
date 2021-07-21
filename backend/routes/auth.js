@@ -28,5 +28,8 @@ router.put('/signup',[
 router.post('/login',[
     body('email', 'Put in a valid Email or Password').trim().isEmail()
 ],authController.login)
-
+router.post('/patient/login',[
+    body('firstName','First Name  must be more than 2 characters').trim().isLength({min:2}),
+    body('lastName','Last Name must be more than 2 characters').trim().isLength({min:2})
+],authController.patientLogin);
 module.exports = router;

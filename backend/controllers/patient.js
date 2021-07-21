@@ -51,7 +51,7 @@ exports.postPatient = (req,res,next) => {
     }
     
     //Check if the user already exists in our system.
-     PatientModel.findOne({firstName: firstName,lastName:lastName})
+     PatientModel.findOne({firstName: firstName.toLowerCase(),lastName:lastName.toLowerCase()})
          .then(result => {
              if(result) 
              throw new Error("We can't have duplicate User in our system");
@@ -63,7 +63,7 @@ exports.postPatient = (req,res,next) => {
              next(err);
          })
      
-    const filePath = path.join(__dirname,'..','images',lastName+firstName+'.png');
+    const filePath = path.join(__dirname,'..','images',lastName.toLowerCase()+firstName.toLowerCase()+'.png');
   
    
    //ensure that the image is saved before continueing
@@ -74,7 +74,7 @@ exports.postPatient = (req,res,next) => {
     const bmi = weight/(height * height) || 0;
     const patient = new PatientModel({
         firstName,lastName,
-        imageUrl: path.join('images',lastName+firstName+'.png').replace('\\','/'), //for it to be compatible with server system
+        imageUrl: path.join('images',lastName.toLowerCase()+firstName.toLowerCase()+'.png').replace('\\','/'), //for it to be compatible with server system
         creator: req.userId,
         age, ward,height,weight,bmi,lga,state,gender
     })
@@ -193,4 +193,6 @@ exports.updatePatientProfile = (req,res,next) => {
         next(err);
     })
 }
+
+
 

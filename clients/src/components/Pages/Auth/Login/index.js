@@ -7,7 +7,7 @@ import Select from "../../../UI/Select";
 
 import classes from './login.module.css';
 import { useAuthDispatch, useAuthStore } from "../../../../store/authStore";
-import { doctorLoginHandler } from "../../../../utils/authHelper";
+import { doctorLoginHandler, patientLoginHandler } from "../../../../utils/authHelper";
 import Loading from "../../../UI/Spinner/loading";
 
 const Login = (props) => {
@@ -20,7 +20,13 @@ const Login = (props) => {
     }
     const submitHandler = (e) => {
         e.preventDefault();
-        doctorLoginHandler(dispatch,e);
+        if(role === 'specialist'){
+            doctorLoginHandler(dispatch,e);
+        }
+        else{
+            patientLoginHandler(dispatch,e)
+        }
+       
     }
     return(
         <div className={classes.Login}>
