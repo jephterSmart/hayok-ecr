@@ -43,7 +43,7 @@ const cadreSchema = new Schema({
         {
            from:{
                type: Schema.Types.ObjectId,
-               ref: "Doctor"
+               ref: "Cadre"
            },
            patient:{
                type: Schema.Types.ObjectId,
@@ -57,7 +57,7 @@ const cadreSchema = new Schema({
                type: Schema.Types.ObjectId,
                default: new mongoose.Types.ObjectId()
            },
-           timeReceive:{
+           timeReceived:{
                type: String,
                default: (new Date()).toString()
            }

@@ -7,13 +7,20 @@ import classes from './navigation.module.css';
 
 const Navigation = () => {
     const authStore = useAuthStore();
+    const notSeen = authStore.notifications.reduce((acc,ele) => {
+        if(ele.seen == false) return acc + 1;
+        else return acc;
+    },0)
     return(
         <nav>
             <ul className={classes.Nav}>
                {authStore.authenticated? (
                 <>
                 {authStore.userType === 'doctor' ? 
-                <NavigationItem link='/user/all-patients'>Patients</NavigationItem>:<NavigationItem link='/user/records'>Records</NavigationItem>}
+                (<>
+                <NavigationItem link='/user/notifications'>Notifications {notSeen}</NavigationItem>
+                <NavigationItem link='/user/all-patients'>Patients</NavigationItem>
+                </>):<NavigationItem link='/user/records'>Records</NavigationItem>}
                <NavigationItem link = '/auth/logout'>Logout</NavigationItem>
                </>
                ) : 

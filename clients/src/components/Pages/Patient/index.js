@@ -18,7 +18,8 @@ const Patient = () => {
     
     const [patients,setPatients] = useState([]);
     const [currentPage,setCurrentPage] = useState(1);
-    const [error,setError] = useState('')
+    const [error,setError] = useState('');
+    const [successful,setSuccessful] = useState(false);
     const authStore = useAuthStore();
 
     useEffect(()=> {
@@ -26,6 +27,7 @@ const Patient = () => {
        .then(pats =>{
         setPatients(pats.patients);
         setCurrentPage(1);
+        setSuccessful(true);
        })
        .catch(err => {
            setError(err.message);
@@ -65,11 +67,16 @@ const Patient = () => {
                             patients.map(pat => <Card key={pat._id} data={pat}/>)
                             
                         ): (
-                            <>
-                            <Skeleton />
-                            <Skeleton />
+                           <>
+                            {successful ? (<p>We currently do not have patients</p>) :(
+                                <>
+                                <Skeleton />
+                                <Skeleton />
+                                </>
+                            )}
                             
                             </>
+                          
                         )
                     }
                 </div>

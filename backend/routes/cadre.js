@@ -15,8 +15,7 @@ router.patch('/update-cadre',isAuth,CadreController.updateEmployeeInfo);
 
 //=> get Employees/notifications 
 router.get('/notifications',isAuth,CadreController.getNotifications)
-//=> get the particular patient
-router.get('/',isAuth,CadreController.getCadre);
+
 
 //=> change notification value to seen
 router.patch('/:notificationId',isAuth,CadreController.changeNotification);

@@ -82,44 +82,7 @@ exports.updateEmployeeInfo = (req,res,next) => {
     
 }
 
-// for getting profile of the login user. 
-exports.getCadre = (req,res,next) => {
-    CadreModel.findById(req.userId)
-    .then(doctor => {
-        if(!doctor){
-            const error = new Error("USer does not exists in our system")
-            error.statusCode = 404;
-            throw error;
-        }
-        const opts1 ={
-            path:'notifications',
-            populate:{
-                path:'from',
-                model:"Cadre",
-                select:'firstName lastName _id'
-            }
-        }
-        const opts2 = {
-            path:'notifications',
-            populate:{
-                path:'patient',
-                model:"Patient",
-                select:'firstName lastName _id'
-            }
-        }
-        return doctor.populate(opts1).populate(opts2).execPopulate()
 
-    })
-    .then(updatedDoctor => {
-        res.status(200).json({
-            message:"User fetch was successful!",
-            data: updatedDoctor
-        });
-    }).catch(err => {
-        if(!err.statusCode) err.statusCode = 500;
-        next(err);
-    })
-}
 exports.getNotifications = (req,res,next) => {
     CadreModel.findById(req.userId)
     .then(doctor => {
@@ -128,10 +91,29 @@ exports.getNotifications = (req,res,next) => {
             error.statusCode = 404;
             throw error 
         }
+        const opts1 ={
+            path:'notifications',
+            populate:{
+                path:'from',
+                model:"Cadre",
+                select:'firstName lastName _id cadre'
+            }
+        }
+        const opts2 = {
+            path:'notifications',
+            populate:{
+                path:'patient',
+                model:"Patient"
+            }
+        }
+        return doctor.populate(opts1).populate(opts2).execPopulate()
+        
+    })
+    .then(updatedDoc => {
         res.status(200).json(
             {
                 message:"Notification fetch successful",
-                notifications: doctor.notifications
+                notifications: updatedDoc.notifications
             }
         )
     })
@@ -159,13 +141,13 @@ exports.changeNotification = (req,res,next) => {
         notification.seen = false;
         else notification.seen = true;
         const notInd = doctor.notifications.findIndex(ele => ele._id.toString() === notId.toSting());
-        doctor.notifications[notId] = notification;
+        doctor.notifications[notInd] = notification;
         return doctor.save();
     })
     .then(updatedDoctor => {
         res.status(200).json({
             message:"Notification has been viewed",
-            doctor: updatedDoctor
+            notifications: updatedDoctor.notifications
         })
     })
     .catch(err => {

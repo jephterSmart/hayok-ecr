@@ -58,6 +58,7 @@ const AuthReducer = (state=initialState,action) => {
             newState.userType = null;
             break;
         case INIT_NOTIFICATION:
+            console.log(action.notifications)
             newState.notifications = action.notifications;
             break;
         case NOTIFICATION:

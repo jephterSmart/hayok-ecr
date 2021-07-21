@@ -125,28 +125,7 @@ export const updateCadreAndPatientInfo = (token,fromId,toId,patientId) => {
 }
 
 
-export const getDoctor = (token) => {
-    const url = 'http://localhost:8080/employees'
-    return fetch(url,{
-        method:"GET",
-        headers:{
-            "Authorization":"Bearer "+ token
-        }
-    })
-    .then(res => {
-        if(res.status !== 200){
-            throw new Error("Could not fetch profile");
-        }
-        return res.json();
-    })
-    .then(data => {
-        console.log(data);
-        return data.data
-    }).
-    catch(err => {
-      throw err;  
-    })
-}
+
 export const getNotifications = (token) => {
     const url = 'http://localhost:8080/employees/notifications';
     return fetch(url,{

@@ -75,6 +75,7 @@ const patientSchema = new Schema({
     complaints:String,
     treatmentPlan:String,
     diagnosis: String,
+    logInTime:String,
 },{timestamps:true})
 
 module.exports = mongoose.model('Patient',patientSchema);

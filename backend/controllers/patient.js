@@ -14,7 +14,7 @@ exports.getPatients = (req,res,next) => {
     const currentPage = req.get('CurrentPage') || 1;
     console.log(perPage,currentPage);
     PatientModel.find()
-        .sort({createdAt: -1})
+        .sort({logInTime: -1, updatedAt: -1})
         .skip((+currentPage -1) * perPage)
         .limit(+perPage)
     .then(patients => {

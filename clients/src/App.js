@@ -28,6 +28,8 @@ const LoginPage = lazyLoad(() => import('./components/Pages/Auth/Login'));
 const SignUpPage = lazyLoad(() => import('./components/Pages/Auth/Signup'));
 const AddPatient = lazyLoad(() => import('./components/Pages/AddPatient'));
 const EncounterPatient = lazyLoad(() => import('./components/Pages/EncounterPatient'));
+const NotificationsPage = lazyLoad(() => import('./components/Pages/Notifications'));
+const NotificationPage = lazyLoad(() => import('./components/Pages/Notification'));
 
 
 
@@ -58,12 +60,13 @@ const App = () => {
         userType: userType
     })
    
+    if(userType === 'doctor'){
     getNotifications(token)
     .then(not => {
       console.log(not);
       dispatch({
         type:INIT_NOTIFICATION,
-        notification: not.notifications
+        notifications: not.notifications
       })
       
     }).catch(err =>{
@@ -72,6 +75,7 @@ const App = () => {
         error: err
       })
     })
+  
     //check for notifications
     const socket = openSocket('http://localhost:8080');
     socket.on('notifications',data => {
@@ -81,7 +85,7 @@ const App = () => {
       //This ensure that only the doctor to whom it is sent receive it
       if(data.to._id.toString() === authStore.token.toString())
       {
-        getDoctor(authStore.token)
+        getNotifications(authStore.token)
         .then(data => {
           dispatch({
             type:NOTIFICATION,
@@ -94,8 +98,9 @@ const App = () => {
       }
      
     })
+  }
     //end of If check
-    }
+    }//end if this is a doctor type
   },[])
   
   
@@ -109,7 +114,6 @@ const App = () => {
       <Route path='/auth/create' >
         <SignUpPage />
       </Route>
-      
       <Route path = '/'>
         <Home />
       </Route>
@@ -130,6 +134,12 @@ if(authStore.authenticated && authStore.userType === 'doctor'){
       <Route path='/user/patients/:patientId'>
         <EncounterPatient />
       </Route>
+      <Route path='/user/notifications'>
+        <NotificationsPage />
+      </Route>
+      <Route path='/user/:userId/:notificationId' >
+        <NotificationPage />
+      </Route>
       <Route path='/auth/logout' >
         <Logout />
       </Route>
@@ -141,7 +151,21 @@ if(authStore.authenticated && authStore.userType === 'doctor'){
   )
 }
 
-             
+if(authStore.authenticated && authStore.userType !== 'doctor'){
+  routes =
+  (
+    <Switch>
+      
+      <Route path='/auth/logout' >
+        <Logout />
+      </Route>
+      <Route path = '/'>
+        <Home />
+      </Route>
+      <Redirect to='/' />
+    </Switch>
+)
+}           
 
   return (
             <Layout>

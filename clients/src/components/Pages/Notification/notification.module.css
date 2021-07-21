@@ -1,0 +1,36 @@
+.Notification{
+    width: 100%;
+    padding:10%;
+    margin-top: -3.2rem;
+}
+.Notification h1{
+    font-size: 5.2rem;
+    width: 100%;
+    text-align: center;
+}
+.Grid{
+    width:100%;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1.6rem;
+    align-items: flex-start;
+}
+.Grid p{
+    width:100%;
+    font-size: 2.4rem;
+    line-height: 3.2rem;
+    padding-bottom: 0.8rem;
+}
+.Img{
+    width: 100%;
+    max-width: 450px;
+    max-height: 450px;
+    height: 100%;
+    margin-bottom: 2.4rem;
+}
+.Img img{
+    max-width: 100%;
+    border-radius: 50%;
+    max-height: 450px;
+    height:100%;
+}

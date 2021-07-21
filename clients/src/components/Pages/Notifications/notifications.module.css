@@ -1,0 +1,10 @@
+.NotificationsPage{
+    width: 100%;
+    padding:10%;
+    margin-top: -3.2rem;
+}
+.NotificationsPage h1{
+    font-size: 5.2rem;
+    width: 100%;
+    text-align: center;
+}
