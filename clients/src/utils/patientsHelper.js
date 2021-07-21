@@ -50,7 +50,7 @@ export const postFormData = (token,formData,cb) => {
 
 export const updatePatientInfo = (token,patientId,formData) => {
     const url = 'http://localhost:8080/user/patients/'+patientId;
-    return fetch(uri,{
+    return fetch(url,{
         method:"PATCH",
         headers:{
             "Authorization":'Bearer '+ token,
@@ -58,20 +58,23 @@ export const updatePatientInfo = (token,patientId,formData) => {
         },
         body: JSON.stringify(formData)
     }).then(res => {
-        if(res.status !== 201 || res.status !== 200){
-            throw new Error("Could not update the user");
-        }
         if(res.status === 422){
             throw new Error("Please fill in all the required fields");
         }
+        
+        if(res.status !== 200 || res.status !== 201){
+            throw new Error("Could not update the user");
+        }
+        
         return res.json()
     })
+    
     .catch(err => {
         throw new Error(err.message || "Error, Try Again!!!")
     })
 }
 export const getAllCadre = (token,userId) => {
-    let uri = 'http://localhost:8080/user/all-cadre'
+    let uri = 'http://localhost:8080/employees/all'
     return fetch(uri,{
         headers:{
            "Authorization": 'Bearer '+ token 
@@ -93,7 +96,7 @@ export const getAllCadre = (token,userId) => {
     })
 }
 export const updateCadreAndPatientInfo = (token,fromId,toId,patientId) => {
-    const url = 'http://localhost:8080/user/update-cadre';
+    const url = 'http://localhost:8080/employees/update-cadre';
     return fetch(url,{
         method:'PATCH',
         headers:{
@@ -106,7 +109,7 @@ export const updateCadreAndPatientInfo = (token,fromId,toId,patientId) => {
         if(res.status === 404){
             throw new Error('Doctor is not available');
         }
-        if(res.status !== 200 || res.status !== 201){
+        if(res.status !== 201){
             throw new Error("Message Not sent")
         }
         return res.json();
@@ -118,5 +121,68 @@ export const updateCadreAndPatientInfo = (token,fromId,toId,patientId) => {
     .catch(err => {
         console.log(err);
         throw new Error(err.message || 'Check your network and Resend again');
+    })
+}
+
+
+export const getDoctor = (token) => {
+    const url = 'http://localhost:8080/employees'
+    return fetch(url,{
+        method:"GET",
+        headers:{
+            "Authorization":"Bearer "+ token
+        }
+    })
+    .then(res => {
+        if(res.status !== 200){
+            throw new Error("Could not fetch profile");
+        }
+        return res.json();
+    })
+    .then(data => {
+        console.log(data);
+        return data.data
+    }).
+    catch(err => {
+      throw err;  
+    })
+}
+export const getNotifications = (token) => {
+    const url = 'http://localhost:8080/employees/notifications';
+    return fetch(url,{
+        method:"GET",
+        headers:{
+            "Authorization":"Bearer "+token
+        }
+    }).then(res => {
+        if(res.status !== 200){
+            throw new Error("Could not fetch notifications");
+        }
+        return res.json();
+    })
+    .catch(err => {
+        console.log(err);
+        throw err;
+    })
+}
+export const updateNotification = (token,seen,notId) => {
+    const url = 'http://localhost:8080/employees/' + notId;
+    return fetch(url,{
+        method:"PATCH",
+        headers:{
+            "Authorization": "Bearer "+token,
+            "Content-Type":'application/json'
+        },
+        body:JSON.stringify({seen})
+    })
+    .then(res => {
+        if(res.status !== 200 || res.status !== 201){
+            throw new Error("You are not a valid user");
+        }
+        return res.json();
+    })
+    .catch(err => {
+        console.log(err);
+        throw err;
     })
 }

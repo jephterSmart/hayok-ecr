@@ -16,12 +16,13 @@
     color: white;
     background-color: var(--primaryColor);
 }
-.Button:disabled{
+.Button:disabled, .Button:hover:disabled, .filled:disabled, .filled:hover:disabled{
     cursor: wait;
     color: gray;
     background-color: transparent;
     border-color: gray;
 }
+
 /* helper classes added dynamically */
 .fullWidth{
     width: 100%;
@@ -36,6 +37,7 @@
     border-color: var(--primaryColor);
     color: var(--primaryColor)
 }
+
 .shadow{
     z-index: 50;
     box-shadow: 1px 3px 6px rgba(10,10,10,0.2);

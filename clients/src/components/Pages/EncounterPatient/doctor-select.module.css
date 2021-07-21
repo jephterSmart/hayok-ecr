@@ -4,8 +4,30 @@
     justify-content: flex-end;
     align-items: center;
     max-width: 100%;
+    float:right;
+    margin-top:-9.6rem;
 }
 .DoctorSelect>*{
     margin: 0;
     max-height: 4.0rem;
+}
+.Btn{
+    border-radius: 0;
+    margin-top: 6.3rem;
+    min-height: 4.5rem;
+    transform: translateZ(10);
+    font-size: large;
+    box-shadow: 3px 6px 15px rgba(20,20,20,0.3);
+}
+.Select{
+    min-width: 52ch;
+}
+.Select select{
+    border-radius: 0;
+    background-color: rgb(152, 214, 255) ;
+    color: black;
+}
+.Select select:active{
+    border: 1px solid rgb(187, 187, 187);
+    border-radius: 0px;
 }

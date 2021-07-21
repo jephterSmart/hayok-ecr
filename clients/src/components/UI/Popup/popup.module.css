@@ -1,19 +1,21 @@
 .Popup{
     max-width: 45%;
-    padding:1.4rem;
+    padding:1.6rem;
     background-color: var(--primaryColor);
     color: white;
     position: fixed;
     z-index: 500;
     top: 10vw;
-    right:0;
+    right:10%;
     transform: translateX(0);
     transform-origin: 0% 50%;
-    transition: transform linear;
+    font-size: 2.4rem;
     cursor: pointer;
 }
 .Popup.Out{
     transform: translateX(-300%);
+    transition: transform linear;
+    transition-delay: 200ms;
 }
 .Popup::after{
     content: '';
@@ -22,9 +24,9 @@
     width: 0px;
     height: 0px;
     top: calc(50% - 20px);
-    right:-20px;
+    right:-40px;
     background: transparent;
-    border:40px solid var(--primaryColor);
+    border:20px solid var(--primaryColor);
     border-color: transparent;
     border-left-color: var(--primaryColor);
 }

@@ -3,6 +3,7 @@
     width: 100%;
     padding:10%;
     margin-top: -3.2rem;
+
 }
 .Encounter h1{
     font-size: 5.2rem;
@@ -13,20 +14,27 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+  
 }
-.Grid>*{
-    margin-right: 2.2rem;
+
+.Grid > div{
+    margin-right: 3.2rem;
+    margin-left: 0;
 }
-.Grid>*:last-child{
+.Grid > div:last-child{
     margin-right: 1rem;
 }
-.Select{
+
+.Grid .Select{
     margin-top: 1.2rem;
+    
 }
-.Select select{
+.Grid .Select select{
     min-height: 5.0rem;
     background-color: rgb(152, 214, 255) ;
     color: black;
+
 }
 .Select select:active{
     border: 1px solid rgb(187, 187, 187);
@@ -37,8 +45,8 @@
 }
 
 .Submit{
-    width: 300px;
-    margin-top:3.2rem;
+    width: 250px;
+    margin-top: 8.0rem;
     
 }
 .Normal{
@@ -47,4 +55,10 @@
 .Error{
     font-size: 1.5rem;
     color:red;
+    visibility: visible;
+}
+.Grid .Special{
+    width:110% !important;
+    margin-right: 0;
+    
 }

@@ -4,11 +4,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const socket = require('./socket');
 
 
 //routes to go into
 const authRoute = require('./routes/auth');
 const patientRoute = require('./routes/patient');
+const cadreRoute = require('./routes/cadre');
 
 const app = express();
 
@@ -31,7 +33,10 @@ app.use('/images',express.static(path.join(__dirname,'images')));
 
 //any route that start with /auth should go into this route
 app.use('/auth',authRoute);
+//any route that begins with /user should go into this route
 app.use('/user',patientRoute);
+//any route that begins with /employess should go into route
+app.use('/employees',cadreRoute);
 
 app.use((error,req,res,next) =>{
     const message = error.message;
@@ -48,7 +53,7 @@ mongoose.connect(process.env.MONGO_URI,
 .then(result => {
    console.log('Connected to mongoDb');
 server = app.listen(process.env.PORT || 8080)
-// socket.init(server)
+socket.init(server)
 
     })
 .catch(err =>{

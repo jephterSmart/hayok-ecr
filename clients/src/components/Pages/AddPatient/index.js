@@ -47,13 +47,15 @@ const AddPatient = () => {
     //This controls form
     const [formData,setFormData] = useState(initialData);
     const [formError,setFormError] = useState({});
-    const [touched,setTouched] = useState(false);
-    const checkFormError = (formError) => {
+    // const [touched,setTouched] = useState(false);
+    const checkFormError = (formError,formData) => {
         const errors = Object.values(formError).reduce((acc,err) => {
-            if(err === undefined) return acc;
+            //if(err === undefined) return acc+ "undefined";
             return acc+err;
         },"")
-        return errors.length > 1;
+        const res = Object.values(formData).some(ele => ele === "" );
+        
+        return  res || errors.length > 1;
     }
     //for handling picures
     const [capture,setCapture] = useState(false);
@@ -95,7 +97,7 @@ const AddPatient = () => {
             generatedAt: new Date().toISOString(),
             png: Image.split(',')[1]
         }}));
-        setTouched(false)
+       
         VideoRef.current.pause();
         VideoRef.current.src = '';
         StreamRef.current.getTracks().forEach( track => {
@@ -108,7 +110,7 @@ const AddPatient = () => {
     const changeHandler = e => {
         let ele = e.target;
         
-        setTouched(true);
+        // setTouched(true);
         setFormData(formdata => {
             return{...formdata,[ele.name] : ele.value}
         })
@@ -138,7 +140,7 @@ const AddPatient = () => {
         postFormData(authStore.token,formData,(err,formData) => {
             if(formData){
                 setLoading(false);
-                setTouched(false);
+                
                 setCapture(false);
                 history.push('/user/all-patients');
                 LinkRef.current.click();
@@ -149,7 +151,7 @@ const AddPatient = () => {
                 setFormError(error => ({...error, server: err.message || 
                     "An error Occured in the server"}));
                     setLoading(false);
-                    setTouched(false);
+                  
                     setCapture(false);
                     return;
             }
@@ -179,7 +181,7 @@ const AddPatient = () => {
                  <Select onChange={changeHandler} name='gender' value= {formData.gender} 
                  options={[{value:'male',displayValue:'Male'},{value:'female',displayValue:'Female'}]}
                  Label="Gender:" errormessage={formError.gender} className={classes.Select}
-                 defaultValue='male'/>
+                 />
                  </div>
                  <div className={classes.Grid}>
                  <Input required onChange={changeHandler} name="weight" value={formData.weight}
@@ -196,7 +198,7 @@ const AddPatient = () => {
                  <Input required onChange={changeHandler} name="lga" value={formData.lga}
                      errormessage={formError.lga} label="Local Government Area:"/>
                  <Select onChange={changeHandler} name='state' value= {formData.state} 
-                 options={stateOptions} className={classes.Select} defaultValue='fct'
+                 options={stateOptions} className={classes.Select} 
                  Label="State:" errormessage={formError.state}/>
                  </div>
                  <div >
@@ -229,7 +231,7 @@ const AddPatient = () => {
                      
                      
                  </div>
-                 <Button disabled ={!capture || touched|| checkFormError(formError) || loading} 
+                 <Button disabled ={loading || checkFormError(formError,formData) } 
                  type='submit' filled raised className={classes.Submit}>Submit
                  <Loading loading={loading} /></Button>
              </form>

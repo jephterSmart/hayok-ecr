@@ -1,13 +1,19 @@
 import {useHistory, useParams} from 'react-router-dom';
-import {useState} from 'react';
+import {useState,useRef} from 'react';
 
 import {updatePatientInfo} from '../../../utils/patientsHelper'
 
 import classes from './encounter.module.css';
 import Input from '../../UI/Input';
+import Popup from '../../UI/Popup';
+import Select from '../../UI/Select';
+import Button from '../../UI/Button';
+import Loading from '../../UI/Spinner/loading';
+
+
 import DoctorSelect from './doctorSelect';
 import { useAuthStore } from '../../../store/authStore';
-import Popup from '../../UI/Popup';
+
 
 const initialData = {
     dateOfEncounter:'',
@@ -18,25 +24,27 @@ const initialData = {
     bloodPressure: '',
     temperature:36.5,
     respiratoryRate: '',
-    complaints:'',
-    treatmentPlan:'',
     diagnosis: 'others',
 }
+
 
 const EncounterPatient = () => {
     const {patientId} = useParams();
     const history = useHistory();
 
     const authStore = useAuthStore();
+    //for handling complains and treatment
+    const complaintRef = useRef();
+    const treatmentRef = useRef();
 
-    const [formData,setFormData] = useState(initialState);
-    const [formError,setFormError] = useState();
+    const [formData,setFormData] = useState(initialData);
+    const [formError,setFormError] = useState({});
     const [message,setMessage] = useState('');
     const [loading,setLoading] = useState();
-    // const [touched,setTouched] = useState(false);
+   // const [touched,setTouched] = useState(false);
     const [time, setTime] = useState(2000);
     const [error,setError] = useState(false)
-
+    
     const changeHandler = e => {
         let ele = e.target;
         
@@ -57,26 +65,31 @@ const EncounterPatient = () => {
                 }) 
             }
         }
-        
+    
     }
-    const checkFormError = (formError) => {
+    const checkFormError = (formError,formData) => {
         const errors = Object.values(formError).reduce((acc,err) => {
-            // if(err === undefined) return acc;
+            //if(err === undefined) return acc+ "undefined";
             return acc+err;
         },"")
-        return errors.length > 1;
+        const res = Object.values(formData).some(ele => ele === "" );
+        
+        return  res || errors.length > 1;
     }
     const submitHandler = e => {
         e.preventDefault();
+        const complaint = complaintRef.current.value;
+        const treatment = treatmentRef.current.value
         setLoading(true);
-        updatePatientInfo(authStore.token,patientId,formData)
+        const sentData = {...formData,[complaintRef.current.name]:complaint,
+        [treatmentRef.current.name] : treatment}
+        
+        updatePatientInfo(authStore.token,patientId,sentData)
         .then(updatedData => {
             setLoading(false);
             console.log(updatedData)
             setMessage("Details has been saved")
-            setTimeout(()=> {
-                history.push('/user/all-patients') 
-            },time);
+            history.push('/user/all-patients') ;
                    
         })
         .catch(err => {
@@ -99,8 +112,9 @@ const EncounterPatient = () => {
 
     }
 
+    
     return(
-        <div classsName={classes.Encounter}>
+        <div className={classes.Encounter}>
             {
                 message !== '' && <Popup danger={error} time={time}
                 onClick={() => setTime(0)}>{message}</Popup>
@@ -115,10 +129,10 @@ const EncounterPatient = () => {
                      type='time' label='Time:' name='timeOfEncounter' required/>
                 </div>
                 <div className={classes.Grid}>
-                    <Select label='Visits:' defaultValue='firstTime' name='visits' onChange={changeHandler}
-                     value={formData.visits}
+                    <Select Label='Visits:'  name='visits' onChange={changeHandler}
+                     value={formData.visits} className={classes.Select}
                     options={[{value:'firstTime',displayValue:'First Time'}, 
-                    {value:'repeat',displayValue: 'Repeat'}]}  classsName={classes.Select}/>
+                    {value:'repeat',displayValue: 'Repeat'}]}  className={classes.Select}/>
                     <Input errormessage={formError.weight} onChange={changeHandler} value={formData.weight}
                      name='weight' label='Weight (in Kg):'  type='number' step="0.5"required/>
                 </div>
@@ -131,35 +145,38 @@ const EncounterPatient = () => {
                 </div>
                 <div className={classes.Grid}>
                     <Input errormessage={formError.bloodPressure} onChange={changeHandler} value={formData.bloodPressure}
-                     name='bloodPressure' label='Blood Pressure (BP):'
+                     name='bloodPressure' label='Blood Pressure (BP):' type='number'
                     />
                     <Input errormessage={formError.temperature} onChange={changeHandler} value={formData.temperature}
                      name='temperature' label='Temperature' type='number'
                     steps='0.1' />
                     <Input errormessage={formError.respiratoryRate} onChange={changeHandler} value={formData.respiratoryRate}
-                     name='respiratoryRate' label='Respiratory Rate (RR):' />
+                     name='respiratoryRate' label='Respiratory Rate (RR):' type='number' />
                 </div>
                 <div className={classes.Grid}>
-                    <Input errormessage={formError.complaints} onChange={changeHandler} value={formData.complaints}
+                    <Input ref={complaintRef} className={classes.Special}
                      textArea rows='5' name='complaints' label='Complaints Box' />
                 </div>
                 <div className={classes.Grid}>
-                    <Select name='diagnosis' Label='Diagnosis :' defaultValue='others'
+                    <Select name='diagnosis' Label='Diagnosis :' 
+                        errormessage={formError.respiratoryRate} onChange={changeHandler} value={formData.respiratoryRate}
                         options={[{value:'hyperTension',displayValue:'HyperTension'},
                         {value:'pneumonia',displayValue:'Pneumonia'},{displayValue:'Malaria',value:'malaria'},
                         {value:'diabetes',displayValue:'Diabetes :'},{value:'others',displayValue:'Others'}]}
-                        classsName={classes.Select} />
+                        className={classes.Select + ' ' + classes.Special} />
                 </div>
-                <div className={classes.Grid}>
-                    <Input errormessage={formError.dateOfEncounter} onChange={changeHandler} value={formData.dateOfEncounter}
+                <div className={classes.Grid }>
+                    <Input ref={treatmentRef} className={classes.Special}
                      textArea rows='5' name='treatmentPlan' label='Treatment Plan box:' />
                 </div>
-                <div className={classes.Grid}>
-                    <Button disabled={checkFormError(formError)}>Save <Loading loading={loading}/></Button>
-                    <DoctorSelect onSelect={doctorSelectHandler} patientId={patientId} />
+                <div className={classes.Grid + ' '+ classes.Relative}>
+                    <Button disabled={ loading || checkFormError(formError,formData)}
+                    className={classes.Submit}>Save <Loading loading={loading}/></Button>
+                    
                     
                 </div>
             </form>
+            <DoctorSelect onSelect={doctorSelectHandler} patientId={patientId} />
         </div>
     )
 }

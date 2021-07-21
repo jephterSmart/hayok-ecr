@@ -1,6 +1,6 @@
 import { useState,useEffect, useRef } from 'react';
 
-import ButtonLike from '../../UI/Button/ButtonLike';
+import Button from '../../UI/Button';
 import Input from '../../UI/Input';
 import Select from '../../UI/Select'
 import Loading from '../../UI/Spinner/loading';
@@ -38,11 +38,13 @@ const DoctorSelect = ({onSelect=()=>{},patientId}) => {
     const SelectRef = useRef();
 
     const submitHandler = (e) => {
+        e.preventDefault();
         setLoading(true);
         const value = SelectRef.current.value;
+        console.log(value);
         updateCadreAndPatientInfo(authStore.token,authStore.userId,value,patientId)
         .then(data => {
-            
+            console.log(data);
             onSelect(null, data);
             setLoading(false);
             setError('');
@@ -57,16 +59,16 @@ const DoctorSelect = ({onSelect=()=>{},patientId}) => {
     }
     const doctorOptions = doctors.map(createOption);
     return(
-        <div className={classes.DoctorSelect}>
+        <form className={classes.DoctorSelect} onSubmit={submitHandler}>
             {error !== ''? <Input value={error} disabled /> :(
                 <Select Label="Send Patient's File To:"
-                options={doctorOptions} ref={SelectRef} />
+                options={doctorOptions} ref={SelectRef}  className={classes.Select}/>
             )}
                         
-            <ButtonLike disable={loading || error !== '' } filled raised
+            <Button disabled={loading || error !== '' } filled raised type='submit'
             className={classes.Btn}>Send <Loading loading={loading} 
-            onClick={submitHandler}/></ButtonLike>
-        </div>
+            /></Button>
+        </form>
     )
 }
 

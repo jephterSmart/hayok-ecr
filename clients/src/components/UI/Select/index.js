@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import classes from './selection.module.css';
 
-const Select = forwardRef(({options,Label='rolling',className,...rest},ref) => {
+const Select = forwardRef(({options,Label='roll',className,...rest},ref) => {
     return(
         <div className={`${classes.Select} ${className? className : ' '}`}>
                 <label htmlFor={Label}>{Label}</label>

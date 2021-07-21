@@ -16,4 +16,7 @@ router.post('/add-patient', isAuth, [
     body('lastName','Must be more than 3 characters').trim().isLength({min:3})
 ],UserController.postPatient);
 
+//=> update the patient data /user/patients/:patientId
+router.patch('/patients/:patientId',isAuth,UserController.updatePatientProfile);
+
 module.exports = router;

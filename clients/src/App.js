@@ -1,9 +1,15 @@
 import React ,{useEffect} from 'react';
 
 import {Route, Redirect, Switch} from 'react-router-dom';
+import openSocket from 'socket.io-client';
+
 
 //our auth store
-import { useAuthDispatch,LOGIN_SUCCESS,useAuthStore,LOGOUT } from './store/authStore';
+import { useAuthDispatch,LOGIN_SUCCESS,useAuthStore,LOGOUT,NOTIFICATION,
+  INIT_NOTIFICATION,ERROR_OCCUR } from './store/authStore';
+
+// For changing the notification states of doctor
+import {getDoctor,getNotifications} from './utils/patientsHelper';
 
 //pages to render
 import Home from './components/HomePage';
@@ -11,8 +17,7 @@ import Layout from './containers/Layout';
 import Logout from './components/Pages/Auth/Logout';
 import Patient from './components/Pages/Patient';
 
-//to check page we're currently in
-// import {useAuthStore} from './store/authStore';
+
 
 //To lazyload pages 
 import lazyLoad from './hoc/lazyLoad';
@@ -52,6 +57,44 @@ const App = () => {
         userId: userId,
         userType: userType
     })
+   
+    getNotifications(token)
+    .then(not => {
+      console.log(not);
+      dispatch({
+        type:INIT_NOTIFICATION,
+        notification: not.notifications
+      })
+      
+    }).catch(err =>{
+      dispatch({
+        type:ERROR_OCCUR,
+        error: err
+      })
+    })
+    //check for notifications
+    const socket = openSocket('http://localhost:8080');
+    socket.on('notifications',data => {
+      //data sent from socket
+      console.log(data);
+      
+      //This ensure that only the doctor to whom it is sent receive it
+      if(data.to._id.toString() === authStore.token.toString())
+      {
+        getDoctor(authStore.token)
+        .then(data => {
+          dispatch({
+            type:NOTIFICATION,
+            notifications: data.notifications
+          })
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
+     
+    })
+    //end of If check
     }
   },[])
   

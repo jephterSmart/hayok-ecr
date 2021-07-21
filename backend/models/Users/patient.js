@@ -51,7 +51,30 @@ const patientSchema = new Schema({
     creator: {
         type: Schema.Types.ObjectId,
         ref: "Cadre"
-    }
+    },
+    encounters:[{
+        dateOfEncounters: [{
+            type:String,
+            required: true}],
+        timeOfEncounters: [{
+            type:String,
+            required: true}],
+        cadre: {
+            type: Schema.Types.ObjectId,
+            ref: "Cadre"
+        },
+        numberOfEncounter: {
+            type: Number,
+            default: 0
+        }
+        
+    }],
+    bloodPressure: String,
+    temperature: Number,
+    respiratoryRate: String,
+    complaints:String,
+    treatmentPlan:String,
+    diagnosis: String,
 },{timestamps:true})
 
 module.exports = mongoose.model('Patient',patientSchema);

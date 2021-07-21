@@ -38,7 +38,31 @@ const cadreSchema = new Schema({
     patients:[ {
         type: Schema.Types.ObjectId,
         ref: "Patient"
-    }]
+    }],
+    notifications:[
+        {
+           from:{
+               type: Schema.Types.ObjectId,
+               ref: "Doctor"
+           },
+           patient:{
+               type: Schema.Types.ObjectId,
+               ref:"Patient"
+           },
+           seen:{
+               type:Boolean,
+               default:false
+           },
+           _id:{
+               type: Schema.Types.ObjectId,
+               default: new mongoose.Types.ObjectId()
+           },
+           timeReceive:{
+               type: String,
+               default: (new Date()).toString()
+           }
+        }
+    ]
 })
 
 module.exports = mongoose.model('Cadre',cadreSchema);

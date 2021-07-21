@@ -7,6 +7,7 @@ const initialState={
     loading: false,
     error:null,
     userType: null,
+    notifications:[],
 }
 export const INIT_SIGNUP = "INIT_SIGNUP";
 export const ERROR_OCCUR = "ERROR_OCCUR";
@@ -14,6 +15,10 @@ export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
 export const INIT_LOGIN = 'INIT_LOGIN';
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGOUT = "LOGOUT";
+
+export const INIT_NOTIFICATION = "INIT_NOTIFICATION";
+export const NOTIFICATION = "NOTIFICATION";
+export const UPDATE_NOTIFICATION = "UPDATE_NOTIFICATION"
 
 const AuthReducer = (state=initialState,action) => {
     const newState = JSON.parse(JSON.stringify(state))
@@ -51,6 +56,23 @@ const AuthReducer = (state=initialState,action) => {
             newState.token = null;
             newState.userId = null;
             newState.userType = null;
+            break;
+        case INIT_NOTIFICATION:
+            newState.notifications = action.notifications;
+            break;
+        case NOTIFICATION:
+            newState.notifications = action.notifications;
+                break;
+        case UPDATE_NOTIFICATION:
+            let notification = newState.notifications
+            .find(ele => ele._id.toString() === action.notificationId.toString());
+            let notInd = newState.notifications
+            .findIndex(ele =>  ele._id.toString() === action.notificationId.toString());
+            if(notInd !== -1){
+                notification.seen = true;
+                newState.notifications[notInd] = notification;
+            }
+            else throw new Error("we did not receive notification")
             break;
             default: return state
     }
