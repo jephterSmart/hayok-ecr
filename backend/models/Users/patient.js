@@ -12,7 +12,7 @@ const patientSchema = new Schema({
         required:true
     },
     age:{
-        type: String,
+        type: Date,
         required: true
     },
     height:{
@@ -54,10 +54,10 @@ const patientSchema = new Schema({
     },
     encounters:[{
         dateOfEncounters: [{
-            type:String,
+            type:Date,
             required: true}],
         timeOfEncounters: [{
-            type:String,
+            type:Date,
             required: true}],
         cadre: {
             type: Schema.Types.ObjectId,

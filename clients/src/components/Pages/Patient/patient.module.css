@@ -29,3 +29,11 @@
 .Link:active{
     color:inherit;
 }
+.Filter{
+    position: sticky;
+    top:100px;
+    z-index: 300;
+    left:0;
+    padding: 0;
+    margin-top: 1.2rem;
+}

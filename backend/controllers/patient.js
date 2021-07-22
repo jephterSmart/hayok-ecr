@@ -10,10 +10,56 @@ const CadreModel = require('../models/Users/cadre');
 
 exports.getPatients = (req,res,next) => {
     // console.log(req.headers);
+    const criteria = req.query.criteria;
+    const value= req.query.value;
+    const operation = req.query.operation;
+  
     const perPage = req.get('PerPage') || 5;
     const currentPage = req.get('CurrentPage') || 1;
-    console.log(perPage,currentPage);
-    PatientModel.find()
+    let match ={}
+   if((criteria && value) || operation ){
+        let compAge =new Date (new Date() - value * 365 *24*60*60*1000);
+        if(criteria=='age' && operation=='less-than'){
+            
+            match[criteria] ={
+                $lte: compAge
+            }
+
+        }
+        if(criteria =='age' && operation == 'equal'){
+            match[criteria] ={
+                $eq: compAge
+            }
+        }
+        if(criteria == 'age' && operation == 'greater-than'){
+            match[criteria] ={
+                $gte: compAge
+            }
+        }
+        if(criteria == 'gender'){
+            match[criteria] ={
+                $eq: value
+            }
+        }
+        if(criteria=='bmi' && operation == 'less-than'){
+            match[criteria] ={
+                $lte: value 
+            }
+        }
+        if(criteria=='bmi' && operation == 'greater-than'){
+            match[criteria] ={
+                $gte: value 
+            }
+        }
+        if(criteria=='bmi' && operation == 'equal'){
+            match[criteria] ={
+                $eq: value 
+            }
+        }
+
+   }
+   
+    PatientModel.find(match)
         .sort({logInTime: -1, updatedAt: -1})
         .skip((+currentPage -1) * perPage)
         .limit(+perPage)

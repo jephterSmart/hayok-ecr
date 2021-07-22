@@ -1,7 +1,11 @@
 
 
-export const  fetchPatients = (token,perPage,currentPage) => {
-    const url = 'http://localhost:8080/user/patients';
+export const  fetchPatients = (token,perPage,currentPage,queryString) => {
+    
+    let url = 'http://localhost:8080/user/patients';
+    console.log(queryString)
+    if(queryString)
+    url = url + queryString;
     return fetch(url,{
         method:"GET",
         headers:{
@@ -33,7 +37,7 @@ export const postFormData = (token,formData,cb) => {
         if(res.status === 422){
             throw new Error('Please fill in all the form data required')
         }
-        if(res.status !== 201 || res.status !== 200){
+        if(res.status !== 201 ){
             throw new Error('Make sure every thing is fill and check your network');
         }
         
@@ -62,7 +66,7 @@ export const updatePatientInfo = (token,patientId,formData) => {
             throw new Error("Please fill in all the required fields");
         }
         
-        if(res.status !== 200 || res.status !== 201){
+        if(res.status !== 200){
             throw new Error("Could not update the user");
         }
         

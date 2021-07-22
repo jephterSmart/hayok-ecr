@@ -5,6 +5,9 @@ import Button from "../../UI/Button";
 import Card from "../../UI/Card";
 import Skeleton from '../../UI/Spinner/skeleton';
 
+//Special component for making request
+import Filter from '../../Filter';
+
 //helper method
 import {fetchPatients} from '../../../utils/patientsHelper';
 
@@ -28,6 +31,7 @@ const Patient = () => {
         setPatients(pats.patients);
         setCurrentPage(1);
         setSuccessful(true);
+        setError('');
        })
        .catch(err => {
            setError(err.message);
@@ -51,12 +55,26 @@ const Patient = () => {
             setCurrentPage(page => page - 1)
         })
     }
+
+    const filterHandler = (filteredPatients,err) => {
+        if(err){
+            setError(err.message);
+            return;
+        }
+        setPatients(filteredPatients);
+        setCurrentPage(1);
+        setSuccessful(true);
+        setError('');
+    }
     console.log(patients)
     return(
         <div className={classes.Patient}>
             <div className={classes.Actions}>
                 <Button filled  raised><Link to='/user/add-patient' className={classes.Link}>Add Patients</Link></Button>
                 <Button filled raised><Link to='/user/view-stat' className={classes.Link}>View Patients statistics</Link></Button>
+            </div>
+            <div className={classes.Filter}>
+                <Filter perPage={10} currentPage={currentPage} submitHandler={filterHandler}/>
             </div>
             <div>
                 <h1>Patients we have in our system:</h1>
