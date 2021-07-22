@@ -237,15 +237,15 @@ export const patientLoginHandler = (dispatch,e) =>{
 
                   window.localStorage?.setItem("userId",data.userId.toString());
                   window.localStorage?.setItem("user Token", data.token.toString());
-                  window.localStorage?.setItem('userType', 'doctor');
-                  const remainingMilliseconds = 60 * 60 * 1000;
+                  window.localStorage?.setItem('userType', 'patient');
+                  const remainingMilliseconds = 3 * 60 * 60 * 1000;
                   const expiryDate = new Date(
                     new Date().getTime() + remainingMilliseconds
                   );
                   localStorage.setItem('expiryDate', expiryDate.toISOString());
                   setAutoLogout(remainingMilliseconds);
                   e.target.reset();
-                  window.location.replace('/');
+                  window.location.replace('/user/records');
             }
             
         ).catch(err => {

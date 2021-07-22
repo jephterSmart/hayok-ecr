@@ -155,7 +155,8 @@ export const updateNotification = (token,seen,notId) => {
         body:JSON.stringify({seen})
     })
     .then(res => {
-        if(res.status !== 200 || res.status !== 201){
+        if(res.status !== 200 ){
+            console.log(res.status)
             throw new Error("You are not a valid user");
         }
         return res.json();
@@ -164,4 +165,22 @@ export const updateNotification = (token,seen,notId) => {
         console.log(err);
         throw err;
     })
+}
+
+export const getUserData = (token) => {
+    const url = 'http://localhost:8080/user/patient';
+    return fetch(url,{
+        method:"GET",
+        headers:{
+            "Authorization": 'Bearer ' + token
+        }
+    }).then(res => {
+        if (res.status !== 200) {
+            throw new Error('Failed to fetch Patients.');
+          }
+          return res.json();
+    }).then(data => {
+        console.log(data);
+        return data.profile;
+    }).catch(err => {throw err})
 }

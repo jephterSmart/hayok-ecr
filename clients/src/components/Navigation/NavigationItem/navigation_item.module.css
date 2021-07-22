@@ -1,18 +1,23 @@
+
 .NavItem{
-    list-style: none;
+    list-style: none;    
     color:var(--primaryColor);
     text-align: center;
-    padding: 1.2rem;
-    font-size: 1.6rem;
+    padding: 0.2rem 1.6rem;
+    padding-bottom: 0.6rem;
+    font-size: 1.4rem;
     border-bottom: 2px solid transparent;
-    transition: border-bottom-color linear 500ms 100ms ;
-    margin-left: 1.6rem;
+    transition: border-bottom-color linear 300ms 50ms ;
+    margin-left: 2.6rem;
+    max-height: 6.2rem;
 }
 .NavItem a{
     text-decoration: none;
     color:inherit;
 }
-.NavItem:hover, .NavItem:active, .NavItem.active{
+.NavItem:hover, .NavItem:active, .NavItem.Active, .NavItem>.active{
     font-weight: 700;
-    border-bottom-color: var(--primaryColor) ;
+    color:rgb(65, 65, 255);
+    border-bottom-color: rgb(65, 65, 255);
 }
+

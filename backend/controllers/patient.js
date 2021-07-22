@@ -34,7 +34,36 @@ exports.getPatients = (req,res,next) => {
         next(err);
     })
 }
+exports.getPatient = (req,res,next) => {
+    PatientModel.findById(req.userId)
+    .then(pat => {
+        if(!pat){
+            const error = new Error("No patient with this Id in our system");
+            error.statusCode = 404;
+            throw error;
+        }
+        pat.logInTime = new Date().toLocaleString();
+        return pat.save()
 
+    })
+    .then(savedPatient => {
+        const options = {
+            path: 'encounters',
+            populate:{
+                path:'cadre',
+                model:'Cadre',
+                select:'cadre firstName lastName _id'
+            }
+        }
+        return savedPatient.populate(options).execPopulate()
+    })
+    .then(updatedPatient =>{
+        res.status(200).json({
+            message:'Fetch profile was successful!!!',
+            profile: updatedPatient}
+        )
+    })
+}
 
 exports.postPatient = (req,res,next) => {
     const {firstName,lastName,age,gender,height,weight,ward,lga,state} = req.body;
@@ -73,7 +102,7 @@ exports.postPatient = (req,res,next) => {
     //calculate body mass index (BMI)
     const bmi = weight/(height * height) || 0;
     const patient = new PatientModel({
-        firstName,lastName,
+        firstName:firstName.toLowerCase(),lastName:lastName.toLowerCase(),
         imageUrl: path.join('images',lastName.toLowerCase()+firstName.toLowerCase()+'.png').replace('\\','/'), //for it to be compatible with server system
         creator: req.userId,
         age, ward,height,weight,bmi,lga,state,gender

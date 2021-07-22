@@ -7,6 +7,7 @@ import Input  from '../../UI/Input';
 import Button from '../../UI/Button';
 import ButtonLike from '../../UI/Button/ButtonLike';
 import Select from '../../UI/Select';
+import Popup from '../../UI/Popup';
 import Loading from '../../UI/Spinner/loading';
 
 
@@ -133,6 +134,14 @@ const AddPatient = () => {
 
     const LinkRef = useRef(); 
     const history = useHistory();
+
+    //for handling succesful send
+    const [timeClicked,setTimeClicked] = useState(1000);
+    const [message,setMessage] = useState('');
+    const popupHandler = () => {
+        setTimeClicked(0);
+        history.push('/user/all-patients');
+    }
     const submitHandler = e => {
         e.preventDefault();
         setLoading(true);
@@ -140,11 +149,15 @@ const AddPatient = () => {
         postFormData(authStore.token,formData,(err,formData) => {
             if(formData){
                 setLoading(false);
-                
+                setFormError(error => ({...error, server: ''}));
+                setMessage(formData.message||"Data has been stored on the server")
                 setCapture(false);
-                history.push('/user/all-patients');
-                LinkRef.current.click();
-                return;
+                return setTimeout(() =>{
+                    history.push('/user/all-patients');
+                    LinkRef.current.click();
+                },timeClicked+300)
+                
+                
                 }
                 
             if(err){
@@ -167,7 +180,10 @@ const AddPatient = () => {
         
              <section className={classes.AddPatient}>
              <h1>Add Patient</h1>
-             <p className={`${classes.Normal} ${formError.server? classes.Error : " "}`}>{formError.server}</p>
+           
+                 {formError.server ?<Popup time={1000} danger>{formError.server}</Popup>: null}
+             
+                {message && <Popup time={timeClicked} onClick={popupHandler}>{message}</Popup>}
              <form onSubmit={submitHandler}>
                  <div className={classes.Grid}>
                      <Input required onChange={changeHandler} name="firstName" value={formData.firstName}

@@ -115,7 +115,7 @@ exports.patientLogin = (req,res,next) => {
         res.status(200).json({
             message:'login sucessful!',
             token: token,
-            userId:loginUser._id.toString()
+            userId:user._id.toString()
         })
         
     })

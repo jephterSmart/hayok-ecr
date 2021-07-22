@@ -8,6 +8,7 @@ const initialState={
     error:null,
     userType: null,
     notifications:[],
+    profile:{}
 }
 export const INIT_SIGNUP = "INIT_SIGNUP";
 export const ERROR_OCCUR = "ERROR_OCCUR";
@@ -18,7 +19,8 @@ export const LOGOUT = "LOGOUT";
 
 export const INIT_NOTIFICATION = "INIT_NOTIFICATION";
 export const NOTIFICATION = "NOTIFICATION";
-export const UPDATE_NOTIFICATION = "UPDATE_NOTIFICATION"
+export const UPDATE_NOTIFICATION = "UPDATE_NOTIFICATION";
+export const INIT_PATIENT = "INIT_PATIENT";
 
 const AuthReducer = (state=initialState,action) => {
     const newState = JSON.parse(JSON.stringify(state))
@@ -74,6 +76,10 @@ const AuthReducer = (state=initialState,action) => {
                 newState.notifications[notInd] = notification;
             }
             else throw new Error("we did not receive notification")
+            break;
+        case INIT_PATIENT:
+            newState.profile = action.profile;
+            newState.notification = []
             break;
             default: return state
     }

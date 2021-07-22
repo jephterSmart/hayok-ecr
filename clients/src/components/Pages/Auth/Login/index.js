@@ -20,6 +20,7 @@ const Login = (props) => {
     }
     const submitHandler = (e) => {
         e.preventDefault();
+        console.log(role);
         if(role === 'specialist'){
             doctorLoginHandler(dispatch,e);
         }

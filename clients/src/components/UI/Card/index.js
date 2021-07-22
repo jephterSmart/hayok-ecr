@@ -16,8 +16,10 @@ const Card = ({data}) => {
     const onEncounter = () => {
         history.push(`/user/patients/${data._id}`)
     }
-
-    let time = new Date(data.createdAt).toLocaleString();
+    
+    let time = new Date(data.updatedAt).toLocaleString();
+    if(new Date(data.logInTime) >= new Date(data.updatedAt))
+    time= new Date(data.logInTime).toLocaleString();
     const url = 'http://localhost:8080/';
     return(
         <>

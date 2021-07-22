@@ -6,16 +6,17 @@ import openSocket from 'socket.io-client';
 
 //our auth store
 import { useAuthDispatch,LOGIN_SUCCESS,useAuthStore,LOGOUT,NOTIFICATION,
-  INIT_NOTIFICATION,ERROR_OCCUR } from './store/authStore';
+  INIT_NOTIFICATION,ERROR_OCCUR,INIT_PATIENT } from './store/authStore';
 
 // For changing the notification states of doctor
-import {getDoctor,getNotifications} from './utils/patientsHelper';
+import {getUserData,getNotifications} from './utils/patientsHelper';
 
 //pages to render
 import Home from './components/HomePage';
 import Layout from './containers/Layout';
 import Logout from './components/Pages/Auth/Logout';
 import Patient from './components/Pages/Patient';
+import Record from './components/Pages/Record';
 
 
 
@@ -30,6 +31,7 @@ const AddPatient = lazyLoad(() => import('./components/Pages/AddPatient'));
 const EncounterPatient = lazyLoad(() => import('./components/Pages/EncounterPatient'));
 const NotificationsPage = lazyLoad(() => import('./components/Pages/Notifications'));
 const NotificationPage = lazyLoad(() => import('./components/Pages/Notification'));
+
 
 
 
@@ -95,12 +97,30 @@ const App = () => {
         .catch(err => {
           console.log(err);
         })
-      }
+      }//end of If check for notification
      
     })
-  }
-    //end of If check
-    }//end if this is a doctor type
+
+  }//end if this is a doctor type
+else{
+  //for cases where we have patient login
+  getUserData(token).then(profile => {
+    dispatch({
+      type:INIT_PATIENT,
+      profile:profile
+    })
+
+  })
+  .catch(err => {
+    dispatch({
+      type:ERROR_OCCUR,
+      error:err
+    })
+  }) 
+}
+
+    }//end of check to see whether you are login
+
   },[])
   
   
@@ -155,10 +175,13 @@ if(authStore.authenticated && authStore.userType !== 'doctor'){
   routes =
   (
     <Switch>
-      
+      <Route path='/user/records'>
+        <Record />
+      </Route>
       <Route path='/auth/logout' >
         <Logout />
       </Route>
+      
       <Route path = '/'>
         <Home />
       </Route>

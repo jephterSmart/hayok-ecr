@@ -99,6 +99,11 @@ exports.getNotifications = (req,res,next) => {
                 select:'firstName lastName _id cadre'
             }
         }
+      
+        return doctor.populate(opts1).execPopulate()
+        
+    })
+    .then(halfPopulate => {
         const opts2 = {
             path:'notifications',
             populate:{
@@ -106,8 +111,7 @@ exports.getNotifications = (req,res,next) => {
                 model:"Patient"
             }
         }
-        return doctor.populate(opts1).populate(opts2).execPopulate()
-        
+        return halfPopulate.populate(opts2).execPopulate()
     })
     .then(updatedDoc => {
         res.status(200).json(
@@ -140,7 +144,7 @@ exports.changeNotification = (req,res,next) => {
         if(seen === "false" )
         notification.seen = false;
         else notification.seen = true;
-        const notInd = doctor.notifications.findIndex(ele => ele._id.toString() === notId.toSting());
+        const notInd = doctor.notifications.findIndex(ele => ele._id.toString() === notId.toString());
         doctor.notifications[notInd] = notification;
         return doctor.save();
     })

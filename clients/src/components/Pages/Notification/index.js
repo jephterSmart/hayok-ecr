@@ -23,10 +23,10 @@ const NotificationPage = () =>{
             <>
             <h1>Full details about the Notification Received</h1>
             
-            <p>{`${notification.from.cadre} ${notification.from.firstName} ${notification.from.lastName}`} sent
+            <p className={classes.Doctor}>{`${notification.from.cadre} ${notification.from.firstName} ${notification.from.lastName}`} sent
             you a patient file. The following information is what was left about the patient. </p>
             <div className={classes.Img}>
-                <img src={notification.patient.imageUrl} />
+                <img src={'http://localhost:8080/'+notification.patient.imageUrl} />
             </div>
             <div className={classes.Grid}>
                 <div>

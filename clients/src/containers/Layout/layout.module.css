@@ -1,7 +1,7 @@
 .Header{
     width: 100%;
     padding: 1.2rem 10%;
-    max-height: 66px;
+    max-height: 6.5rem;
     background-color: rgb(255, 255, 235);
     display: flex;
     justify-content: space-between;
@@ -12,10 +12,11 @@
     transform-origin: 50% 100%;
     transform: translateY(0);
     transition: transform linear 300ms 50ms;
+    overflow: hidden;
     
 }
 .hide{
-    transform: translateY(-110%);
+    transform: translateY(-150%);
 }
 .Logo{
     width: 250px;
