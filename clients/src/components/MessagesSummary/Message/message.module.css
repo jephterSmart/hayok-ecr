@@ -1,0 +1,75 @@
+.Image{
+    width: 40px;
+    height: 40px;
+    padding: 0px;
+    border-radius: 50%;
+    position: relative;
+    
+}
+.Image img{
+    width: 100%;
+    max-width: 100%;
+}
+.Image img:hover{
+   display: none;
+}
+.Image:hover{
+    background: #ddd;
+}
+.Image:hover>div:nth-child(3){
+    display: inline-block;
+    background: transparent;
+}
+.Image>div:nth-child(3){
+    display: none;
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    border: 2px solid #999;
+  
+}
+.Badge{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: rgba(0,255,0,1) radial-gradient(circle, 
+    rgba(255,255,255,1) 0%, rgba(255,255,255,1) 36%, rgba(0,255,0,1) 37%, rgba(0,255,0,1) 100%) ;
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    
+}
+.Badge.Active{
+    background: green;
+}
+.Text{
+    display: inline-block;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    flex-grow: 3,
+}
+.Text strong{
+    font-size:1.4rem;
+    line-height:0.8;
+    font-weight: 600
+}
+.Text p{
+    font-size: 1.2rem;
+    color: #ddd;
+    line-height:0.8;
+}
+.Text+div{
+    text-align:left;
+    font-size: 1.4rem;
+    color: #ddd;
+}
+.ListItem{
+    min-height: 50px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}

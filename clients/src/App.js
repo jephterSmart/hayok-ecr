@@ -8,8 +8,11 @@ import openSocket from 'socket.io-client';
 import { useAuthDispatch,LOGIN_SUCCESS,useAuthStore,LOGOUT,NOTIFICATION,
   INIT_NOTIFICATION,ERROR_OCCUR,INIT_PATIENT } from './store/authStore';
 
+//our message store
+import {UPDATE_MESSAGE,useMessageDispatch,INIT_MESSAGE} from './store/messageStore'
+
 // For changing the notification states of doctor
-import {getUserData,getNotifications} from './utils/patientsHelper';
+import {getUserData,getNotifications,getMyMessage} from './utils/patientsHelper';
 
 //pages to render
 import Home from './components/HomePage';
@@ -31,7 +34,7 @@ const AddPatient = lazyLoad(() => import('./components/Pages/AddPatient'));
 const EncounterPatient = lazyLoad(() => import('./components/Pages/EncounterPatient'));
 const NotificationsPage = lazyLoad(() => import('./components/Pages/Notifications'));
 const NotificationPage = lazyLoad(() => import('./components/Pages/Notification'));
-
+const MessagesPage = lazyLoad(() => import('./components/Pages/Messages'));
 
 
 
@@ -39,6 +42,9 @@ const NotificationPage = lazyLoad(() => import('./components/Pages/Notification'
 const App = () => {
   const dispatch = useAuthDispatch();
   const authStore = useAuthStore();
+
+  const messageDispatch = useMessageDispatch();
+  
   //done so that if there already exist a token, it can be reused again
   useEffect(() => {
     if(localStorage.getItem('user Token')){
@@ -85,7 +91,7 @@ const App = () => {
       console.log(data);
       
       //This ensure that only the doctor to whom it is sent receive it
-      if(data.to._id.toString() === authStore.token.toString())
+      if(data.to._id.toString() === authStore.userId.toString())
       {
         getNotifications(authStore.token)
         .then(data => {
@@ -123,7 +129,48 @@ else{
 
   },[])
   
-  
+  //useEffect made for messages
+  useEffect(() =>{
+    if(localStorage.getItem('user Token')){
+      let token = localStorage.getItem('user Token');
+      let userId = localStorage.getItem('userId');
+      let userType = localStorage.getItem('userType');
+      getMyMessage(token,userId,userType)
+      .then(messages => {
+        console.log(messages);
+        messageDispatch({
+          type:INIT_MESSAGE,
+          messages: messages
+        })
+        
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      //for socket connections
+      const socket = openSocket('http://localhost:8080');
+    socket.on('messages',data => {
+      //data sent from socket
+      console.log(data);
+      //If the user is Me, then don't do any thing
+      if(data.from._id.toString() === userId.toString())
+      return;
+      //This app does not allow patient to patient || doctor to doctor communication.
+      if(data.fromType.toString() === userType.toString())
+      return;
+      //Then check if it is truely to me.
+      if(data.to._id.toString() === userId.toString()){
+        messageDispatch({
+          type:UPDATE_MESSAGE,
+          message: data
+        })
+      }
+      
+     
+    })
+
+    }
+  },[])
   let routes = (
     
       <Switch>
@@ -147,6 +194,9 @@ if(authStore.authenticated && authStore.userType === 'doctor'){
     <Switch>
       <Route path='/user/all-patients'>
         <Patient />
+      </Route>
+      <Route path='/user/messages'>
+        <MessagesPage />
       </Route>
       <Route path='/user/add-patient'>
         <AddPatient />
@@ -177,6 +227,9 @@ if(authStore.authenticated && authStore.userType !== 'doctor'){
     <Switch>
       <Route path='/user/records'>
         <Record />
+      </Route>
+      <Route path='/user/messages'>
+        <MessagesPage />
       </Route>
       <Route path='/auth/logout' >
         <Logout />

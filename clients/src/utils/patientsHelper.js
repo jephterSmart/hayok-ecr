@@ -3,7 +3,7 @@
 export const  fetchPatients = (token,perPage,currentPage,queryString) => {
     
     let url = 'http://localhost:8080/user/patients';
-    console.log(queryString)
+    
     if(queryString)
     url = url + queryString;
     return fetch(url,{
@@ -187,4 +187,113 @@ export const getUserData = (token) => {
         console.log(data);
         return data.profile;
     }).catch(err => {throw err})
+}
+
+export const getMessages =(token,from,to,userType) => {
+    const url = `http://localhost:8080/info/message/${from}/${to}/${userType}`
+    return fetch(url,{
+        headers:{
+            "Authorization":'Bearer '+token
+        },
+        method: "GET"
+    })
+    .then(res => {
+        if(res.status !== 200){
+            throw new Error('Could not fetch messages');
+        }
+        return res.json()
+    })
+    .then(data => {
+        console.log(data);
+        return data.messages;
+    })
+    .catch(err => {
+        throw err;
+    })
+
+}
+
+export const sendMessage = (token,from,to,userType,message) => {
+    console.log(userType)
+    const url = 'http://localhost:8080/info/message';
+    return fetch(url,{
+        method:"POST",
+        headers:{
+            "Authorization":'Bearer ' + token,
+            "Content-Type":'application/json',
+        },
+        body: JSON.stringify({
+            fromId:from,toId:to,message:message,fromType:userType
+        })
+    })
+    .then( res => {
+        if(res.status !== 201){
+            console.log(res.status)
+            throw new Error("Could not send message");
+        }
+        return res.json();
+    })
+    .then(data => {
+        return data.sentMessage
+    })
+    .catch(err => {
+        throw err;
+    })
+    
+}
+
+export const changeMessageStatus = (token,fromId,toId,fromType,seen) => {
+    let url = 'http://localhost:8080/info/message';
+    return fetch(url,{
+        method:"PATCH",
+        headers:{
+            "Authorization": 'Bearer ' + token,
+            "Content-Type": 'application/json'
+        },
+        body:JSON.stringify({
+            fromId,toId,fromType,seen
+        })
+    })
+    .then(res => {
+        if(res === 401){
+            throw new Error("This message is no longer in our database")
+        }
+        if(res !== 200){
+            throw new Error("An error occured");
+        }
+        return res.json();
+    })
+    .then(result => {
+        return result.data;
+    })
+    .catch(err => {
+        throw err;
+    })
+} 
+
+export const getMyMessage = (token,fromId,userType) => {
+    const url = 'http://localhost:8080/info/messages/'+fromId +'/'+userType;
+    return fetch(url,{
+        method:"GET",
+        headers:{
+            "Authorization":"Bearer "+ token
+        }  
+    })
+    .then( res => {
+        if(res.status === 302) {
+            return {
+                messages: []
+            }
+        }
+        if(res.status !== 200){
+            throw new Error('Sorry could not fetch you unseen messages');
+        }
+        return res.json();
+    })
+    .then(result => {
+        return result.messages
+    })
+    .catch(err => {
+        throw err;
+    })
 }

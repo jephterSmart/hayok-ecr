@@ -54,10 +54,10 @@ const patientSchema = new Schema({
     },
     encounters:[{
         dateOfEncounters: [{
-            type:Date,
+            type:String,
             required: true}],
         timeOfEncounters: [{
-            type:Date,
+            type:String,
             required: true}],
         cadre: {
             type: Schema.Types.ObjectId,
@@ -76,6 +76,7 @@ const patientSchema = new Schema({
     treatmentPlan:String,
     diagnosis: String,
     logInTime:String,
+    
 },{timestamps:true})
 
 module.exports = mongoose.model('Patient',patientSchema);

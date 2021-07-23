@@ -1,0 +1,44 @@
+.Messages{
+    width: 80%;
+    margin: 0 auto;
+    max-width: 600px;
+    padding: 2.2rem;
+    background-color: darkcyan;
+    border-radius: 1.2rem;
+    position: fixed;
+   
+    max-height: 90vh;
+    overflow:hidden;
+    top: 12%;
+    left: calc(50% - 300px);
+    z-index: 10000;
+}
+.Grid{
+    width:100%;
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 2.4rem;
+    color:white;
+
+}
+.MessageArea{
+    min-height: 400px;
+    max-height: 30vh;
+    overflow: auto;
+    position: relative;
+    
+}
+.MessageAction{
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: darkcyan;
+    margin: 0;
+    padding: 0;
+    max-height: 30vh;
+}
+.MessageAction textarea{
+    max-height: 5.4rem;
+}

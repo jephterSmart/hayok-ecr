@@ -37,5 +37,18 @@ export {
     default as Signup
 } from './Signup';
 export {
+    default as KeyboardArrowDown
+} from './KeyboardArrowDown';
+export {
+    default as KeyboardArrowUp
+} from './KeyboardArrowUp';
+export {
+    default as Sort
+} from './Sort';
+export {
+    default as Search
+} from './Search';
+export {
     default as Message
 } from './Message';
+

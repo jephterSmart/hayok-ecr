@@ -5,9 +5,14 @@ import Navigation from '../../components/Navigation';
 
 import classes from './layout.module.css';
 import Footer from '../../components/Footer';
+import { Link } from 'react-router-dom';
+
+import Messages from '../../components/MessagesSummary';
+import { useAuthStore } from '../../store/authStore';
 
 const Layout = ({children, ...rest}) => {
-    
+    const {authenticated} = useAuthStore();
+
     const [yPos, setYPos] = useState(200);
     const [hide,setHide] = useState(false);
 
@@ -33,9 +38,9 @@ const Layout = ({children, ...rest}) => {
 return(
     <>
     <header className={`${classes.Header} ${hide ? classes.hide: ' '}`}  >
-        <div className={classes.Logo} >
+        <Link to='/' className={classes.Logo} >
             <Logo />
-        </div>
+        </Link>
         <Navigation />  
     </header>
     <div className={classes.content} >
@@ -43,7 +48,9 @@ return(
             {children}
         </main>
         <Footer />
+        {authenticated && <Messages />}
     </div>
+    
     </>
     )
     }

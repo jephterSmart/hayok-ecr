@@ -11,6 +11,7 @@ const socket = require('./socket');
 const authRoute = require('./routes/auth');
 const patientRoute = require('./routes/patient');
 const cadreRoute = require('./routes/cadre');
+const messageRoute = require('./routes/message');
 
 const app = express();
 
@@ -37,6 +38,9 @@ app.use('/auth',authRoute);
 app.use('/user',patientRoute);
 //any route that begins with /employess should go into route
 app.use('/employees',cadreRoute);
+
+//any route that deals with message goes into here
+app.use('/info',messageRoute);
 
 app.use((error,req,res,next) =>{
     const message = error.message;

@@ -11,13 +11,17 @@ import ErrorBoundary from './hoc/ErrorBoundary';
 
 //store
 import {AuthProvider} from './store/authStore';
+import {MessageProvider} from './store/messageStore';
 
 const app = (
   <React.StrictMode>
     <Router>
       <ErrorBoundary>
         <AuthProvider>
-          <App />
+          <MessageProvider>
+            <App />
+          </MessageProvider>
+          
         </AuthProvider>
       </ErrorBoundary>
     </Router>

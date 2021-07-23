@@ -109,6 +109,7 @@ exports.getPatient = (req,res,next) => {
             profile: updatedPatient}
         )
     })
+    .catch(err => next(err))
 }
 
 exports.postPatient = (req,res,next) => {

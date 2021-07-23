@@ -1,0 +1,133 @@
+.Root{
+    position: fixed;
+    z-index: 100000000;
+    bottom: -12px;
+    right:0;
+    max-height: calc( 100vh - 110px );
+    width: 21.74%;
+    min-width: 200px;
+    padding:0;
+    overflow:hidden;
+    box-shadow:2px 6px 10px rgba(20,20,20,0.35);
+    background-color: white;
+    border-radius: 1.4rem;
+    padding-bottom: 24px;
+}
+.Message{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 0px 8px;
+    margin-bottom: 0,
+}
+.Message.Open{
+    margin-bottom: 12px;
+}
+.Image{
+    width: 40px;
+    height: 40px;
+    padding: 0px;
+    border-radius: 50%;
+    position: relative;
+    margin-right: 8px;
+    display: inline-block;
+}
+.Image>img{
+    max-width: 100%;
+    width: 100%;
+}
+.Image + strong{
+    font-size: 1.4rem;
+    display: inline-block;
+    padding: 0.8rem;
+    letter-spacing: 2px;
+}
+.Image>div{
+    border: 2px solid white;
+    width: 20px;
+    height: 20px;
+    background-color: green;
+    border-radius: 50%;
+    position:absolute;
+    bottom:-5px;
+    right: -5px;
+}
+.Left{
+    display: flex;
+    justify-content: center;
+    align-items:center;
+}
+.Textfield{
+    /* background-color:#ddd; */
+    border-radius: 4px;
+    position: sticky;
+    top: 0;
+    left:0;
+    z-index: 50;
+    margin: 0 8px;
+    width: calc( 100% - 32px);
+    border: 0px solid;
+}
+.Textfield input{
+    background-color:transparent;
+    margin: 0 auto;
+    border:0;
+    margin-top: -0.4rem;
+    border-radius: 0;
+}
+.Textfield input:hover, .Textfield input:focus{
+    border:0;
+    border-radius: 0;
+}
+.Collapse{
+    position: relative;
+    padding-bottom:0;
+    margin-bottom:0;
+   
+}
+
+.List{
+    width: 100%;
+    overflow: auto;
+    margin-top: 10px;
+    margin-bottom: 24px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    height: 448px;
+    
+
+} 
+.Adornment{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border:2px solid transparent;
+    border-radius: 0.6rem;
+    padding: 0;
+    background-color: #ddd;
+}
+.Adornment:hover{
+    border-color: darkgray;
+}
+.Start{
+    float: left;
+    margin-left:0.8rem;
+    margin-top: 0;
+}
+.End{
+    float:right;
+    margin-right: 0.8rem;
+}
+.Btn{
+    width: 40px;
+    border-radius: 50%;
+    height: 40px;
+    margin: 1rem;
+    margin-right: 12px;
+
+}
+.Btn:hover{
+    background-color: whitesmoke;
+}
