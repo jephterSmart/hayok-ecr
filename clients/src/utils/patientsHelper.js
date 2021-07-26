@@ -1,5 +1,6 @@
 
 
+
 export const  fetchPatients = (token,perPage,currentPage,queryString) => {
     
     let url = 'http://localhost:8080/user/patients';
@@ -228,7 +229,7 @@ export const sendMessage = (token,from,to,userType,message) => {
     })
     .then( res => {
         if(res.status !== 201){
-            console.log(res.status)
+            
             throw new Error("Could not send message");
         }
         return res.json();
@@ -255,10 +256,10 @@ export const changeMessageStatus = (token,fromId,toId,fromType,seen) => {
         })
     })
     .then(res => {
-        if(res === 401){
+        if(res.status === 401){
             throw new Error("This message is no longer in our database")
         }
-        if(res !== 200){
+        if(res.status !== 200){
             throw new Error("An error occured");
         }
         return res.json();
@@ -296,4 +297,24 @@ export const getMyMessage = (token,fromId,userType) => {
     .catch(err => {
         throw err;
     })
+}
+
+export const getPatientsStatistics = (token) => {
+    const url = 'http://localhost:8080/user/patients/statistics';
+    return fetch(url,{
+        method:"GET",
+        headers:{
+            "Authorization":'Bearer '+token
+        }
+    })
+    .then(res => {
+        if(res.status !== 200){
+            throw new Error("Could not fetch status");
+        }
+        return res.json();
+    })
+    .then(data => {
+        return data.statistics
+    })
+    .catch(err => {throw new Error(err.message || 'could not fetch')})
 }

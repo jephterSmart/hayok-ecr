@@ -154,7 +154,6 @@ const AddPatient = () => {
                 setCapture(false);
                 return setTimeout(() =>{
                     history.push('/user/all-patients');
-                    LinkRef.current.click();
                 },timeClicked+300)
                 
                 
@@ -251,7 +250,6 @@ const AddPatient = () => {
                  type='submit' filled raised className={classes.Submit}>Submit
                  <Loading loading={loading} /></Button>
              </form>
-             <div style={{display:'none'}} ref={LinkRef}><Link to='/user/all-patients' /> </div>
          </section>
        
        

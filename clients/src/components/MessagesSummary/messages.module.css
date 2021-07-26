@@ -131,3 +131,7 @@
 .Btn:hover{
     background-color: whitesmoke;
 }
+.Link{
+    color: inherit;
+    text-decoration: none;
+}

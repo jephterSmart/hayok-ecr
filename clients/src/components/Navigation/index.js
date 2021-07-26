@@ -3,6 +3,7 @@ import NavigationItem from "./NavigationItem";
 
 //store values
 import { useAuthStore } from "../../store/authStore";
+import { useMessageStore } from "../../store/messageStore";
 
 import classes from './navigation.module.css';
 
@@ -33,6 +34,11 @@ const Navigation = () => {
         if(ele.seen == false) return acc + 1;
         else return acc;
     },0)
+    const messageStore = useMessageStore();
+    const messageNotSeen = messageStore.reduce((acc,ele) => {
+        if(ele.seen === false) return acc+1;
+        else return acc;
+    },0)
    
     const [currentPage,setCurrentPage] = useState(initialData);
 
@@ -60,8 +66,8 @@ const Navigation = () => {
                {authStore.authenticated? (
                 <>
                 <NavigationItem link='/user/messages' isActive={isActiveHandler('messages')} active={currentPage.messages}>
-                        <Badge content={notSeen} hide={notSeen === 0}>
-                            <NavIcon Icon={notSeen?
+                        <Badge content={messageNotSeen} hide={messageNotSeen === 0}>
+                            <NavIcon Icon={messageNotSeen?
                             <MessageUnread style={{color: currentPage.messages ?'rgb(65, 65, 255)':'var(--primaryColor)'}} />:
                             <Message style={{color: currentPage.messages ?'rgb(65, 65, 255)':'var(--primaryColor)'}} />} text='Messages' />
                         </Badge>

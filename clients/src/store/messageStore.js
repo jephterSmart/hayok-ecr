@@ -13,14 +13,17 @@ const MessageReducer = (state=initialState,action) => {
                 newState= action.messages;
                 break;
             case UPDATE_MESSAGE:
+            
                 newState.push(action.message);
+                
                 break;
             case UPDATE_STATUS:
-               const message = newState.find(ele => ele.from.toString() === action.from.toSting());
+               const message = newState.find(ele => ele._id.toString() === action.messageId.toString());
                if(!message) return state;
-               const messageInd = newState.findIndex(ele => ele.from.toString() === action.from.toSting());
-               message.seen = action.seen
+               const messageInd = newState.findIndex(ele => ele._id.toString() === action.messageId.toString());
+               message.seen = Boolean(action.seen)
                 newState[messageInd] = message;
+                console.log(newState);
                 break;
             default: return state;
     }

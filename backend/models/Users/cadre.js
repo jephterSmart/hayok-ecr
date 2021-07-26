@@ -39,6 +39,7 @@ const cadreSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Patient"
     }],
+    active: Boolean,
     notifications:[
         {
            from:{

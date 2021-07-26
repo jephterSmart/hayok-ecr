@@ -6,7 +6,7 @@ import openSocket from 'socket.io-client';
 
 //our auth store
 import { useAuthDispatch,LOGIN_SUCCESS,useAuthStore,LOGOUT,NOTIFICATION,
-  INIT_NOTIFICATION,ERROR_OCCUR,INIT_PATIENT } from './store/authStore';
+  INIT_NOTIFICATION,ERROR_OCCUR,INIT_PATIENT,STATISTICS } from './store/authStore';
 
 //our message store
 import {UPDATE_MESSAGE,useMessageDispatch,INIT_MESSAGE} from './store/messageStore'
@@ -35,6 +35,8 @@ const EncounterPatient = lazyLoad(() => import('./components/Pages/EncounterPati
 const NotificationsPage = lazyLoad(() => import('./components/Pages/Notifications'));
 const NotificationPage = lazyLoad(() => import('./components/Pages/Notification'));
 const MessagesPage = lazyLoad(() => import('./components/Pages/Messages'));
+const MessagePage = lazyLoad(() => import('./components/Pages/Message'));
+const PatientStat = lazyLoad(() => import('./components/Pages/Statistics'));
 
 
 
@@ -44,23 +46,28 @@ const App = () => {
   const authStore = useAuthStore();
 
   const messageDispatch = useMessageDispatch();
-  
+  //our connection to web socket
+  const socket = openSocket('http://localhost:8080');
   //done so that if there already exist a token, it can be reused again
   useEffect(() => {
+    let id;
     if(localStorage.getItem('user Token')){
       let token = localStorage.getItem('user Token');
       let userId = localStorage.getItem('userId');
       let userType = localStorage.getItem('userType');
       let expiryDate = localStorage.getItem('expiryDate');
-      
-      if (new Date(expiryDate) <= new Date()) {
+      const remainingMilliseconds =
+      new Date(expiryDate).getTime() - new Date().getTime();
+      id = setTimeout(() => {
         dispatch({type:LOGOUT});
         localStorage.removeItem('token');
         localStorage.removeItem('expiryDate');
         localStorage.removeItem('userId');
         localStorage?.removeItem('userType');
         return;
-      }
+      }, remainingMilliseconds);
+    
+      
       dispatch({
         type:LOGIN_SUCCESS,
         token: token,
@@ -85,15 +92,15 @@ const App = () => {
     })
   
     //check for notifications
-    const socket = openSocket('http://localhost:8080');
+    
     socket.on('notifications',data => {
       //data sent from socket
       console.log(data);
       
       //This ensure that only the doctor to whom it is sent receive it
-      if(data.to._id.toString() === authStore.userId.toString())
+      if(data.to._id.toString() === userId.toString())
       {
-        getNotifications(authStore.token)
+        getNotifications(token)
         .then(data => {
           dispatch({
             type:NOTIFICATION,
@@ -105,6 +112,12 @@ const App = () => {
         })
       }//end of If check for notification
      
+    })
+    socket.on('statistics',stat => {
+      dispatch({
+        type:STATISTICS,
+        statistics: stat
+      })
     })
 
   }//end if this is a doctor type
@@ -126,7 +139,9 @@ else{
 }
 
     }//end of check to see whether you are login
-
+    return () => {
+      clearTimeout(id);
+    }
   },[])
   
   //useEffect made for messages
@@ -147,11 +162,12 @@ else{
       .catch(err => {
         console.log(err);
       })
+      
       //for socket connections
-      const socket = openSocket('http://localhost:8080');
+      
     socket.on('messages',data => {
       //data sent from socket
-      console.log(data);
+     
       //If the user is Me, then don't do any thing
       if(data.from._id.toString() === userId.toString())
       return;
@@ -195,9 +211,16 @@ if(authStore.authenticated && authStore.userType === 'doctor'){
       <Route path='/user/all-patients'>
         <Patient />
       </Route>
+      <Route path='/user/view-stat'>
+        <PatientStat />
+      </Route>
       <Route path='/user/messages'>
         <MessagesPage />
       </Route>
+      <Route path='/user/message/:toId'>
+        <MessagePage />
+      </Route>
+
       <Route path='/user/add-patient'>
         <AddPatient />
       </Route>
@@ -230,6 +253,9 @@ if(authStore.authenticated && authStore.userType !== 'doctor'){
       </Route>
       <Route path='/user/messages'>
         <MessagesPage />
+      </Route>
+      <Route path='/user/message/:toId'>
+        <MessagePage />
       </Route>
       <Route path='/auth/logout' >
         <Logout />

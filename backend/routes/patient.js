@@ -7,11 +7,15 @@ const isAuth = require('../middleware/isAuth');
 
 const router = express.Router();
 
+//=> GET statistics of patients
+router.get('/patients/statistics',isAuth,UserController.getPatientsStatistics)
+
 //=> GET /user/patients
 router.get('/patients',isAuth,UserController.getPatients);
 
 //=> GET a singel patient, i.e, his profile
 router.get('/patient',isAuth,UserController.getPatient)
+
 
 // => post a patient /user/add-patient
 router.post('/add-patient', isAuth, [

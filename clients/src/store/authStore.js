@@ -8,7 +8,8 @@ const initialState={
     error:null,
     userType: null,
     notifications:[],
-    profile:{}
+    profile:{}, 
+    statistics:{}
 }
 export const INIT_SIGNUP = "INIT_SIGNUP";
 export const ERROR_OCCUR = "ERROR_OCCUR";
@@ -21,6 +22,8 @@ export const INIT_NOTIFICATION = "INIT_NOTIFICATION";
 export const NOTIFICATION = "NOTIFICATION";
 export const UPDATE_NOTIFICATION = "UPDATE_NOTIFICATION";
 export const INIT_PATIENT = "INIT_PATIENT";
+
+export const STATISTICS = "STATISTICS";
 
 const AuthReducer = (state=initialState,action) => {
     const newState = JSON.parse(JSON.stringify(state))
@@ -80,6 +83,9 @@ const AuthReducer = (state=initialState,action) => {
         case INIT_PATIENT:
             newState.profile = action.profile;
             newState.notification = []
+            break;
+        case STATISTICS:
+            newState.statistics = action.statistics;
             break;
             default: return state
     }

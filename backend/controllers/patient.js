@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-
+const socket = require('../socket');
 
 const {validationResult} = require('express-validator/check');
 
@@ -22,7 +22,7 @@ exports.getPatients = (req,res,next) => {
         if(criteria=='age' && operation=='less-than'){
             
             match[criteria] ={
-                $lte: compAge
+                $gte: compAge
             }
 
         }
@@ -33,7 +33,7 @@ exports.getPatients = (req,res,next) => {
         }
         if(criteria == 'age' && operation == 'greater-than'){
             match[criteria] ={
-                $gte: compAge
+                $lte: compAge
             }
         }
         if(criteria == 'gender'){
@@ -114,6 +114,7 @@ exports.getPatient = (req,res,next) => {
 
 exports.postPatient = (req,res,next) => {
     const {firstName,lastName,age,gender,height,weight,ward,lga,state} = req.body;
+    let updatedPatient;
 
     const image = req.body.imageData;
 
@@ -158,12 +159,18 @@ exports.postPatient = (req,res,next) => {
     .then(savedPatient => {
         return  savedPatient.populate('creator','firstName lastName _id').execPopulate() 
     })
-    .then(updatedPatient =>{
+    .then(updatedPat =>{
+        updatedPatient = updatedPat;
+        return getStatistics();
+        
+    })
+    .then(stat => {
+        socket.getIO().emit('statistics',stat);
         res.status(201).json({
             message:'patient created',
-            patient:updatedPatient,
-        })
-        
+            patient:updatedPatient
+    })
+    
     })
     .catch(err => {
         if(!err.statusCode){
@@ -216,6 +223,13 @@ exports.updatePatientProfile = (req,res,next) => {
         patient.bmi = bmi;
         if(visits === 'firstTime'){
             const encounters = patient.encounters;
+            const encounter = encounters.find(ele => ele.cadre.toString() === req.userId.toString() );
+            if(encounter){
+                const error = new Error(`You do have encounter with this patient or 
+                his file has been transferred to you, Please select repeat`);
+                error.statusCode = 422;
+                throw error;
+            }
             encounters.push({
                 dateOfEncounters: [dateOfEncounter],
                 timeOfEncounters: [timeOfEncounter],
@@ -268,6 +282,57 @@ exports.updatePatientProfile = (req,res,next) => {
         if(!err.statusCode) err.statusCode = 500 ;      
         next(err);
     })
+}
+const getStatistics = () => {
+    const ages = ['0-19','20-39','40-59','60-79','80-99','100-119']
+  return  PatientModel.find()
+    .then(patients => {
+        if(!patients){
+            const error = new Error('No patient yet available');
+            throw error;
+        }
+        let ageObj = {
+            '0-19':0,
+            '20-39':0,
+            '40-59':0,
+            '60-79':0,
+            '80-99':0,
+            '100-119':0
+        };
+        let genderObj ={
+            female:0,
+            male:0,
+        };
+        patients.forEach(patient => {
+            
+            ages.forEach(age => {
+                let ageBracket =  age.split('-');
+              
+                ageBracket[0] = new Date(new Date() - Number(ageBracket[0])* 365* 24 * 60 * 60*1000);
+                ageBracket[1] = new Date(new Date() - Number(ageBracket[1])* 365* 24 * 60 * 60*1000);
+                if(patient.age >= ageBracket[1] && patient.age <= ageBracket[0] ){
+                    ageObj[age] =  ageObj[age] + 1 ;
+                }
+            });
+            genderObj[patient.gender] = genderObj[patient.gender] + 1 ;
+        })
+        let obj = {
+            age:ageObj,
+            gender:genderObj
+        }
+        return obj;
+    })
+    .catch(err => {throw new Error(err.message)})
+}
+exports.getPatientsStatistics = (req, res,next) => {
+    getStatistics()
+    .then(stat => {
+        res.status(200).json({
+            message:"Statistics of age and gender fetched successfully!",
+            statistics: stat
+        })
+    })
+    .catch(err => next(err));
 }
 
 

@@ -1,5 +1,5 @@
-const fs = require('fs')
-const path = require('path')
+
+
 const socket = require('../socket');
 
 
@@ -35,7 +35,7 @@ exports.updateEmployeeInfo = (req,res,next) => {
             error.statusCode = 404;
             throw error;
         }
-        
+        // This is done in case we're trying to send a patient file we've not encountered
         patient =  cadre.patients.find(ele => ele.toString() === patientId.toString())
         if(!patient){
             const error = new Error("No Patient found");
@@ -67,12 +67,42 @@ exports.updateEmployeeInfo = (req,res,next) => {
         return fromDoctor.save()
     })
     .then(savedFromDoctor => {
-       
-        socket.getIO().emit('notifications',{from:savedFromDoctor,to:saveToDoctor,patient:patient})
+
+        return PatientModel.findById(patientId)
+        
+    })
+    .then(patient => {
+        if(!patient){
+            const error = new Error('No patient with this Id');
+            error.statusCode = 422;
+            throw error;
+        }
+        let encounter =patient.encounters
+        .find(encounter => encounter.cadre.toString() === saveToDoctor._id.toString())
+        let encInd = patient.encounters
+        .findIndex(encounter => encounter.cadre.toString() === saveToDoctor._id.toString())
+        const today = new Date();
+        if(encounter){
+            patient.encounters[encInd].dateOfEncounters.push(today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate());
+            patient.encounters[encInd].timeOfEncounters.push(today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds());
+            patientencounters[encInd].numberOfEncounter++;
+            
+        }
+        else{
+            patient.encounters.push({
+                dateOfEncounters: [today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()],
+                timeOfEncounters: [today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()],
+                cadre: saveToDoctor._id,
+            })
+        }
+       return patient.save()
+    })
+    .then(savedPatient => {
+        socket.getIO().emit('notifications',{from:fromDoctor,to:saveToDoctor,patient:savedPatient})
      
         res.status(201).json({
             message:'Patient file has been sent!',
-            profile: savedFromDoctor
+            profile: fromDoctor
         })
     })
     .catch(err => {

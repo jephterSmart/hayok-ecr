@@ -27,7 +27,7 @@ const Popup = ({children,time=500,className,danger,...rest}) => {
    
     let component =  (
         <div {...rest} className={names.join(' ') } 
-        style={{transitionDuration:`${time}ms`}}>
+        style={{transitionDelay:`${time}ms`}}>
             {children}
         </div>
     )

@@ -6,17 +6,77 @@ const CadreModel = require('../models/Users/cadre');
 
 exports.postMessage = (req,res,next) => {
     const {fromId,toId,message,fromType} = req.body;
- 
-    const newMessage = new MessageModel({
+    let newMessage;
+    let fromPerson;
+    const newMess = new MessageModel({
         from: fromId,
         to: toId,
         message,
         fromType
     });
-    newMessage.save()
+    newMess.save()
+    .then(savedMessage => {
+        newMessage = savedMessage;
+        if(fromType ==='doctor'){
+            return CadreModel.findById(fromId)
+        }
+        else{
+            return PatientModel.findById(fromId);
+        }
+        
+    })
+    .then(person => {
+        fromPerson = person;
+        if(fromType === 'doctor'){
+           return PatientModel.findById(toId)
+        }
+        else{
+            return CadreModel.findById(toId)
+        }
+    })
+    .then(toPerson => {
+        if(fromType === 'doctor'){
+            return {
+                ...newMessage._doc,
+                from:{
+                    _id: fromPerson._id,
+                    cadre: fromPerson.cadre,
+                    firstName: fromPerson.firstName,
+                    lastName:fromPerson.lastName,
+                    active: fromPerson.active
+                },
+                to:{
+                    _id: toPerson._id,
+                    firstName:toPerson.firstName,
+                    lastName: toPerson.lastName,
+                    encounters:toPerson.encounters,
+                    active: toPerson.active
+                }
+            }
+        }
+        else{
+            return {
+                ...newMessage._doc,
+                from:{
+                    _id: fromPerson._id,
+                    encounters: fromPerson.encounters,
+                    firstName:fromPerson.firstName,
+                    lastName:fromPerson.lastName,
+                    active: fromPerson.active,
+                },
+                to:{
+                    _id:toPerson._id,
+                    cadre: toPerson.cadre,
+                    firstName: toPerson.firstName,
+                    lastName:toPerson.lastName,
+                    active: toPerson.active
+                }
+            }
+        }
+    })
     .then(savedMessage => {
         socket.getIO().emit('messages',savedMessage)
-     
+        
         res.status(201).json({
             message:'Message has been sent!!!',
             sentMessage:savedMessage
@@ -64,17 +124,19 @@ exports.getMessages = (req,res,next) => {
        })
        .then(messages => {
           const newMessages = messages.map(message => ({
-                ...message,
+                ...message._doc,
                 from:{
                     _id:message.from,
                  firstName: doctorFrom.firstName,
                  cadre:doctorFrom.cadre,
-                 lastName:doctorFrom.lastName   
+                 lastName:doctorFrom.lastName,
+                 active: doctorFrom.active,   
                 },
                 to:{
                     _id:message.to,
                     firstName:patientTo.firstName,
                     lastName:patientTo.lastName,
+                    active: patientTo.active,
                 }
             }))
             return newMessages
@@ -85,17 +147,19 @@ exports.getMessages = (req,res,next) => {
        })
        .then(messages => {
         const newMessages = messages.map(message => ({
-            ...message,
+            ...message._doc,
             from:{
                 _id:message.from,
              firstName: patientTo.firstName,
-             lastName:patientTo.lastName   
+             lastName:patientTo.lastName,
+             active: patientTo.active   
             },
             to:{
                 _id:message.to,
                 firstName:doctorFrom.firstName,
                 cadre: doctorFrom.cadre,
                 lastName:doctorFrom.lastName,
+                active:doctorFrom.active
             }
         }))
         return newMessages
@@ -105,6 +169,7 @@ exports.getMessages = (req,res,next) => {
             allMessages.sort((a,b) =>{
              return b.createdAt < a.createdAt ? 1 : -1
          })
+         console.log(allMessages);
          res.status(200).json({
              message:"Fetch successful!!!",
              messages: allMessages
@@ -150,18 +215,20 @@ exports.getMessages = (req,res,next) => {
        })
        .then(messages => {
           const newMessages = messages.map(message => ({
-                ...message,
+                ...message._doc,
                 from:{
                     _id:message.from,
                  firstName: patientFrom.firstName,
                  lastName:patientFrom.lastName,
-                 encounters:patientFrom.encounters   
+                 encounters:patientFrom.encounters,
+                 active: patientFrom.active
                 },
                 to:{
                     _id:message.to,
                     firstName:doctorTo.firstName,
                     lastName:doctorTo.lastName,
-                    cadre: doctorTo.cadre
+                    cadre: doctorTo.cadre,
+                    active: doctorTo.active
                 }
             }))
             return newMessages
@@ -172,18 +239,20 @@ exports.getMessages = (req,res,next) => {
        })
        .then(messages => {
         const newMessages = messages.map(message => ({
-            ...message,
+            ...message._doc,
             from:{
                 _id:message.from,
              firstName: doctorTo.firstName,
              lastName:doctorTo.lastName,
              cadre:doctorTo.cadre, 
+             active: doctorTo.active
             },
             to:{
                 _id:message.to,
                 firstName:patientFrom.firstName,
                 lastName:patientFrom.lastName,
-                encounters:patientFrom.encounters
+                encounters:patientFrom.encounters,
+                active: patientFrom.active,
             }
         }))
         return newMessages
@@ -193,6 +262,7 @@ exports.getMessages = (req,res,next) => {
             allMessages.sort((a,b) =>{
              return b.createdAt < a.createdAt ? 1 : -1
          })
+         
          res.status(200).json({
              message:"Fetch successful!!!",
              messages: allMessages
@@ -211,17 +281,20 @@ exports.changeMessageStatus = (req,res,next) => {
     //changing its status
     const {seen,fromId,toId,fromType} = req.body;
     const bolSeen = Boolean(seen);
-    MessageModel.findOne({from:fromId,to:toId,fromType})
-    .then(res => {
-        if(!res){
+    MessageModel.find({from:fromId,to:toId,fromType})
+    .then(messages => {
+        if(!messages){
             const error = new Error("This message did not come from me");
             error.statusCode = 401;
             throw error;
         }
-        res.seen = bolSeen;
-        return res.save()
+        messages.forEach(message => {
+            message.seen = bolSeen;
+        })
+        return Promise.all(messages.map(message => message.save()))
     })
     .then(savedMessage => {
+       
         res.status(200).json({
             message:'Message has been viewed',
             data: savedMessage
@@ -234,7 +307,7 @@ exports.getUserMessage = (req,res,next) => {
     //The same person owns the fromType and toId
     const {toId,fromType} = req.params;
     
-    console.log(fromType)
+   
     let myMessages =[];
     let person;
     //find the messages that are directed towards this user and have not been seen
@@ -243,7 +316,7 @@ exports.getUserMessage = (req,res,next) => {
         if(!messages || messages.length === 0) {
             const err = new Error("You don't have active messages")
             err.statusCode = 302;
-            throw err;
+             throw err;
             
         }
         myMessages= messages;
@@ -274,9 +347,9 @@ exports.getUserMessage = (req,res,next) => {
     .then(persons => {
         if(fromType === 'doctor'){
             //then here we know persons are patients;
-            const populatedMessage = persons.map(patient => {
+            const populatedMessage = persons.map((patient,ind) => {
                 return{
-                    ...myMessages,
+                    ...myMessages[ind]._doc,
                     from:{
                         _id:patient._id,
                      firstName: patient.firstName,
@@ -295,9 +368,9 @@ exports.getUserMessage = (req,res,next) => {
         }
         else{
             //we know persons are doctor
-            const populatedMessage = persons.map(doctor => {
+            const populatedMessage = persons.map((doctor,ind) => {
                 return{
-                    ...myMessages,
+                    ...myMessages[ind]._doc,
                     from:{
                         _id:doctor._id,
                      firstName: doctor.firstName,
@@ -318,7 +391,7 @@ exports.getUserMessage = (req,res,next) => {
         }
     })
     .then(messages =>{
-        console.log(messages)
+     
         res.status(200).json({
             message:"Message gotten successfully!",
             messages: messages

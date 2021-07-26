@@ -48,7 +48,7 @@ exports.signUp = (req,res,next) => {
 
 exports.login = (req,res,next) => {
     const errors = validationResult(req);
-
+    let token;
     if(!errors.isEmpty()){
         const error = new Error(errors.array()[0].msg);
         error.statusCode = 422;
@@ -73,10 +73,19 @@ exports.login = (req,res,next) => {
             error.statusCode = 401;
             throw error;
         }
-        const token = jwt.sign({
+        const tok = jwt.sign({
             email:loginUser.email,
             userId:loginUser._id.toString()
         },process.env.SECRET,{expiresIn: '1hr'});
+        loginUser.active = true;
+        setTimeout(() => {
+            loginUser.active = false
+        },1*60*60*1000);
+        token = tok;
+        return loginUser.save()
+        
+    })
+    .then(user => {
         res.status(200).json({
             message:'login sucessful!',
             token: token,
@@ -91,7 +100,7 @@ exports.login = (req,res,next) => {
 
 exports.patientLogin = (req,res,next) => {
     const errors = validationResult(req);
-
+    let token;
     if(!errors.isEmpty()){
         const error = new Error(errors.array()[0].msg);
         error.statusCode = 422;
@@ -107,19 +116,28 @@ exports.patientLogin = (req,res,next) => {
             error.statusCode = 401;
             throw error;
         }
-        const token = jwt.sign({
+        const tok = jwt.sign({
             firstName:user.firstName,
             lastName:user.lastName,
             userId:user._id.toString()
         },process.env.SECRET,{expiresIn: '3hr'});
+        user.active = true;
+        setTimeout(() => {
+            user.active = false;
+            user.save().then(user => {console.log(user)}).catch(err => {console.log(err)})
+        },3*60*60*1000);
+        token= tok;
+        return user.save()
+       
+        
+    })
+    .then(user => {
         res.status(200).json({
             message:'login sucessful!',
             token: token,
             userId:user._id.toString()
-        })
-        
+        }) 
     })
-   
     .catch(err => {
         if(!err.statusCode) err.statusCode = 500;
         next(err)

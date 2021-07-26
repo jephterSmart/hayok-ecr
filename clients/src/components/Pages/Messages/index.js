@@ -27,6 +27,7 @@ const MessagesPage = () => {
     const {userType,token,userId} = useAuthStore();
     const [currentPage,setCurrentPage] = useState(1);
     const [error,setError] = useState('');
+    const MessageRef = useRef();
 
     useEffect(() => {
         if(userType === 'doctor'){
@@ -72,6 +73,7 @@ const MessagesPage = () => {
         .then(messages =>{
             setError('')
             setMessages(messages);
+            MessageRef.current.scrollIntoView()
         })
         .catch(err => {
             setError(err.message || 'Can not get messages')
@@ -91,7 +93,9 @@ const MessagesPage = () => {
                     return newMessages
                 })
                 setLoading(false);
-                setError('')
+                setError('');
+                InputRef.current.value = '';
+                MessageRef.current.scrollIntoView();
             })
             .catch(err => {
                 setLoading(false);
@@ -104,7 +108,10 @@ const MessagesPage = () => {
     useEffect(()=>{
         //Avoid doing this when page first loads.
         if(newMessages.length > 0){
-            let message = newMessages.find(message => message.to._id.toString() === toPerson.toString())
+           //if message from that person
+            let message = newMessages.find(message => message.from._id.toString() === toPerson.toString() &&
+            message.seen === false)
+            
             //An extra level of protection to ensure that we're checking only for 
             //messages that are not seen
             if(message && !Boolean(message.seen)){
@@ -114,13 +121,14 @@ const MessagesPage = () => {
                         });
                 changeMessageStatus (token,message.from._id,message.to._id,message.fromType,true)
                 .then(changedMessage => {
-                    console.log(changedMessage)
+                    
                     setError('')
                     messageDispatch({
                         type:UPDATE_STATUS,
                         seen:true,
-                        from:toPerson
+                        messageId:message._id
                     });
+                    MessageRef.current.scrollIntoView();
                 })
                 .catch(err => {
                     setError(err.message || "Check your Internet Connection")
@@ -132,63 +140,70 @@ const MessagesPage = () => {
         }
        
     },[newMessages])
-    console.log(messages);
+   
     return(
         <div className={classes.Messages}>
             <h1>Messaging</h1>
-            {error && <Popup danger>{error}</Popup>}
+            {error && <Popup time={5000} danger>{error}</Popup>}
             {userType==='doctor'?(
                 <div>
                     <Select options={options} Label='Select Patient to chat with:'
                     onChange={SelectHandler} value={toPerson}/>
                     <div className={classes.MessageArea}>{
-                        messages.map(message => {
+                        messages.map((message,idx,arr) => {
                             if(message.from._id.toString() === userId.toString())
-                            return (<div className={classes.Grid}>
-                                <p>You : <br /> {message._doc.message}</p>
-                                <p>{message._doc.createdAt}</p>
+                            return (<div className={classes.Grid+' '+ classes.You} key={message._id}
+                            ref={idx===arr.length-1 ? MessageRef: {current:' '}} >
+
+                                <p>You : <br /> {message.message}</p>
+                                <p>{message.createdAt}</p>
                             </div>)
                             if(message.to._id.toString() === userId.toString()){
-                                return(<div className={classes.Grid}>
+                                return(<div className={classes.Grid + ' '+ classes.Person} key={message._id}
+                                ref={idx===arr.length-1 ? MessageRef: {current:' '}} >
                                     <p>{`${convertToCap(message.from.firstName)}  ${convertToCap(message.from.lastName)} :`}
-                                    <br/> {message._doc.message}</p>
-                                    <p>{message._doc.createdAt}</p>
+                                    <br/> {message.message}</p>
+                                    <p>{message.createdAt}</p>
                                 </div>)
                             }
                         })
                     }
-                        <div className={classes.MessageAction}>
+                       
+                    </div>
+                    <div className={classes.MessageAction}>
                             <Input ref={InputRef} label="Type message to send" textArea rows={3} placeholder="Send Message to Patient "/>
-                            <Button disabled={loading}
+                            <Button disabled={loading} filled raised
                             onClick={MessageSendHandler}>Send <Loading loading={loading}/></Button>
-                        </div>
                     </div>
                 </div>
             ):(<div>
                    <Select options={options} Label='Select Employee to chat with:'
                     onChange={SelectHandler} value={toPerson} /> 
                      <div className={classes.MessageArea}>{
-                        messages.map(message => {
+                        messages.map((message,idx,arr) => {
                             if(message.from._id.toString() === userId.toString())
-                            return (<div className={classes.Grid} key={message._id}>
-                                <p>You : <br /> {message._doc.message}</p>
-                                <p>{message._doc.createdAt}</p>
+                            return (<div className={classes.Grid + ' '+classes.You} key={message._id}
+                            ref={idx===arr.length-1 ? MessageRef: {current:' '}} >
+                                <p>You : <br /> {message.message}</p>
+                                <p>{message.createdAt}</p>
                             </div>)
                             if(message.to._id.toString() === userId.toString()){
-                                return(<div className={classes.Grid} key={message._id}>
+                                return(<div className={classes.Grid + '  '+ classes.Person} key={message._id}
+                                ref={idx===arr.length-1 ? MessageRef: {current:' '}} >
                                     <p>{`${convertToCap(message.from.firstName)}  ${convertToCap(message.from.lastName)} :`}
-                                    <br/> {message._doc.message}</p>
-                                    <p>{message._doc.createdAt}</p>
+                                    <br/> {message.message}</p>
+                                    <p>{message.createdAt}</p>
                                 </div>)
                             }
                         })
                     }
+                    
+                    </div>
                     <div className={classes.MessageAction}>
                             <Input ref={InputRef} label="Type message to send" textArea rows={3} placeholder="Send Message to Doctor "/>
-                            <Button disabled={loading}
+                            <Button disabled={loading} filled raised
                             onClick={MessageSendHandler}>Send <Loading loading={loading}/></Button>
                         </div>
-                    </div>
                 </div>)}
         </div>
     )

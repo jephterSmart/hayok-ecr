@@ -9,7 +9,7 @@ import Button from '../../UI/Button';
 import classes from './record.module.css';
 
 const RecordPage = () =>{
-    const {userId,profile,error :errorState} = useAuthStore();
+    const {profile,error :errorState} = useAuthStore();
     const history = useHistory();
     
     
@@ -18,7 +18,7 @@ const RecordPage = () =>{
    const chatHandler = (staffId) => {
         return (e) => {
             //coming back to this
-            history.push(`/user/message/${userId}/${staffId}`)
+            history.push(`/user/message/${staffId}`)
         }
    }
     

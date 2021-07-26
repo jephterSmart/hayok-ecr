@@ -1,12 +1,17 @@
 import {useState} from 'react';
-
+import {Link} from 'react-router-dom';
 
 import {  KeyboardArrowDown, KeyboardArrowUp, Search, Sort } from '../Icons';
 import Button from '../UI/Button'
 import Input from '../UI/Input'
+import Badge from '../UI/Badge'
 import Message from './Message';
 
+
 import personImage from '../../images/profile.jpg';
+
+import {useMessageStore} from '../../store/messageStore';
+import {useAuthStore} from '../../store/authStore';
 
 import classes from './messages.module.css';
 
@@ -19,10 +24,19 @@ const Collapse = ({in:ini,children,className='',...rest}) => {
     if(ini) return <div {...rest} className={names.join(' ')}>{children}</div>;
     else return <div className={names.join(' ')} {...rest}>{null}</div> 
 }
-
+const convertToCap = letter => {
+    return letter[0].toUpperCase() + letter.substring(1);
+}
 const Messages = () => {
     
-    const [open,setOpen] = useState(false)
+    const [open,setOpen] = useState(false);
+
+    const {token,userId} = useAuthStore();
+    const messageStore = useMessageStore();
+    const messageNotSeen = messageStore.reduce((acc,ele) => {
+        if(ele.seen === false) return acc+1;
+        else return acc;
+    },0);
     
     return (
        <div className={classes.Root}>
@@ -32,7 +46,7 @@ const Messages = () => {
                             <img src={personImage} alt='user' />
                             <div></div>
                     </div>
-                    <strong>Messaging</strong>
+                    <Badge content={messageNotSeen} hide={messageNotSeen === 0}><strong>New Messages</strong></Badge>
                </div>
                <div>
                     
@@ -55,23 +69,29 @@ const Messages = () => {
                    
                 </div>
                 <div className={classes.List}>
-                        <Message name="Frank Ojiako" active 
-                        lastMessage="You: You're Welcome" lastVisited ="Jun 9"/>
-                        <Message name="Chris nwasiwe" active 
-                        lastMessage="chris: sure man!!!" lastVisited ="Jun 8"/>
-                        <Message name="Ibiniye Obikoya"  
-                        lastMessage="You: You're Welcome" lastVisited ="Jun 6"/>
-                        <Message name="Frank Ojiako" active 
-                        lastMessage="You: You're Welcome" lastVisited ="Jun 9"/>
-                        <Message name="Frank Ojiako" 
-                        lastMessage="You: You're Welcome" lastVisited ="Jun 2"/>
-                        <Message name="Frank Ojiako" active 
-                        lastMessage="You: You're Welcome" lastVisited ="Jan 9"/>
-                        <Message name="Frank Ojiako"  
-                        lastMessage="You: You're Welcome" lastVisited ="Mar 9"/>
-                        <Message name="Frank Ojiako"  
-                        lastMessage="You: You're Welcome" lastVisited ="Mar 9"/>
-                        
+                        {messageStore.map(message => {
+                            if(userId.toString() === message.from._id.toString()){
+                                return(
+                                    <Link key={message._id} className={classes.Link} to={`/user/message/${message.to._id}`}>
+                                    <Message  name={`${convertToCap(message.to.firstName)} ${convertToCap(message.to.lastName)}`} 
+                                    active ={message.to.active}
+                                    lastMessage={`You: ${message.message}`} lastVisited ={message.createdAt}/>
+                                    </Link>
+                                )
+                            }
+                            else{
+                                return(
+                                    <Link key={message._id} className={classes.Link}  to={`/user/message/${message.from._id}`}>
+                                    <Message name={`${convertToCap(message.from.firstName)}  ${convertToCap(message.from.lastName)}`} 
+                                    active={message.from.active} key={message._id}
+                                lastMessage={`${convertToCap(message.from.firstName)}  ${convertToCap(message.from.lastName)}: ${message.message}`} 
+                                lastVisited ={message.createdAt}/>
+                                </Link>
+                            
+                                )
+                            }
+                            
+                        })}
                     </div>
            </Collapse>
            
